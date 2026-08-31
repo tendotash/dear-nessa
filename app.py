@@ -44,7 +44,7 @@ def file_to_data_uri(path_str):
 
 letter_data = {
     "1": {
-        "text": """When you lose sight of purpose, remember Melbourne.
+        "text": '''When you lose sight of purpose, remember Melbourne.
 
 Think of how alive you felt. How intriguing it was when we exited the airport
 and it was as though the sky was an aircon. How cute it was when the villagers
@@ -55,7 +55,7 @@ And Mr Summit's Flat White and Toasties? Wew, there will be so many more Mr Summ
 
 There is so much more we have yet to experience. And I look forward to more firsts with you.
 
-When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!♡""",
+When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!<3"''',
         "signature": "Love, R ♡",
         "song_title": "long live",
         "artist": "Taylor Swift ♡",
@@ -726,6 +726,45 @@ Right = 767 letter + 18 gap + 185 music = 970px
 .full-inside {
     height: calc(100% - 46px);
     padding: 18px 31px;
+    overflow: hidden;
+}
+
+/* ========================================================
+   SCROLL ONLY THE FULL LETTER
+======================================================== */
+
+.paper-scroll {
+    width: 88%;
+    max-width: 650px;
+    height: 100%;
+    margin: 0 auto;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    padding-right: 10px;
+
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: #df83aa rgba(95, 55, 78, .16);
+}
+
+.paper-scroll::-webkit-scrollbar {
+    width: 9px;
+}
+
+.paper-scroll::-webkit-scrollbar-track {
+    background: rgba(95, 55, 78, .10);
+    border-radius: 999px;
+}
+
+.paper-scroll::-webkit-scrollbar-thumb {
+    background: #df83aa;
+    border-radius: 999px;
+}
+
+.paper-scroll::-webkit-scrollbar-thumb:hover {
+    background: #ee9abb;
 }
 
 
@@ -736,11 +775,15 @@ Right = 767 letter + 18 gap + 185 music = 970px
 .paper {
     position: relative;
 
-    width: 82%;
-    max-width: 610px;
-    height: 470px;
+    width: 100%;
+    max-width: none;
 
-    margin: 0 auto;
+    min-height: 100%;
+    height: auto;
+
+    margin: 0;
+
+    overflow: visible;
 
     padding:
         48px
@@ -835,12 +878,6 @@ Right = 767 letter + 18 gap + 185 music = 970px
         transform .25s ease;
 }
 
-@media (min-width: 1051px) {
-    .paper {
-        height: 100%;
-        margin: 0 auto;
-    }
-}
 
 .paper.paper-changing {
     opacity: 0;
@@ -1141,8 +1178,8 @@ Right = 767 letter + 18 gap + 185 music = 970px
         height: 625px;
     }
 
-    .paper {
-        height: 525px;
+    .paper-scroll {
+        width: 90%;
     }
 }
 
@@ -1195,17 +1232,25 @@ Right = 767 letter + 18 gap + 185 music = 970px
     }
 
     .full-window {
-        height: auto;
+        height: 625px;
     }
 
     .full-inside {
+        height: calc(100% - 46px);
         padding: 15px 10px 20px;
     }
 
+    .paper-scroll {
+        width: 98%;
+        max-width: none;
+        height: 100%;
+        padding-right: 7px;
+    }
+
     .paper {
-        width: 96%;
+        width: 100%;
+        min-height: 100%;
         height: auto;
-        min-height: 470px;
 
         padding:
             45px
@@ -1420,28 +1465,35 @@ Right = 767 letter + 18 gap + 185 music = 970px
 
                 <div class="full-inside">
 
-                    <article
-                        class="paper"
-                        id="paper"
+                    <div
+                        class="paper-scroll"
+                        id="paperScroll"
                     >
 
-                        <div
-                            class="letter-text"
-                            id="letterText"
-                        ></div>
+                        <article
+                            class="paper"
+                            id="paper"
+                        >
 
-                        <div
-                            class="signature"
-                            id="signature"
-                        ></div>
+                            <div
+                                class="letter-text"
+                                id="letterText"
+                            ></div>
 
-                        <div class="paper-sparkle">
-                            ✧
-                            <br>
-                            ✦
-                        </div>
+                            <div
+                                class="signature"
+                                id="signature"
+                            ></div>
 
-                    </article>
+                            <div class="paper-sparkle">
+                                ✧
+                                <br>
+                                ✦
+                            </div>
+
+                        </article>
+
+                    </div>
 
                 </div>
 
@@ -1603,6 +1655,9 @@ const envelopes =
 const paper =
     document.getElementById("paper");
 
+const paperScroll =
+    document.getElementById("paperScroll");
+
 const letterText =
     document.getElementById("letterText");
 
@@ -1673,6 +1728,9 @@ function updateLetterDisplay(letter) {
     );
 
     setTimeout(() => {
+
+        /* Every newly opened letter begins at the top. */
+        paperScroll.scrollTop = 0;
 
         letterText.textContent =
             letter.text;
