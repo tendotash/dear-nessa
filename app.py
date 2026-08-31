@@ -55,7 +55,7 @@ And Mr Summit's Flat White and Toasties? Wew, there will be so many more Mr Summ
 
 There is so much more we have yet to experience. And I look forward to more firsts with you.
 
-When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!"""",
+When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!" """,
         "signature": "Love, R ♡",
         "song_title": "long live",
         "artist": "Taylor Swift ♡",
