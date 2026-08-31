@@ -190,7 +190,7 @@ You are beautiful, and you are more than enough.""",
                 "image": image_asset_data_uri(
                     "assets/images/letter2/photo2"
                 ),
-                "caption": "God's creation!",
+                "caption": "God's BEST creation!",
                 "x": 10,
                 "y": -10,
                 "width": 190,
