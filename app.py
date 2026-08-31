@@ -159,7 +159,7 @@ body {
 }
 
 body {
-    overflow: hidden;
+    overflow: visible;
 }
 
 #letter-app {
@@ -1198,7 +1198,9 @@ Right = 767 letter + 18 gap + 185 music = 970px
 @media (max-width: 650px) {
 
     #letter-app {
-        min-height: 0;
+        min-height: 1900px;
+        height: auto;
+        overflow: visible;
     }
 
     .page {
@@ -2242,7 +2244,12 @@ function resizeStreamlitFrame() {
 
         const contentHeight =
             Math.ceil(
-                app.getBoundingClientRect().height
+                Math.max(
+                    app.scrollHeight,
+                    app.offsetHeight,
+                    document.body.scrollHeight,
+                    document.documentElement.scrollHeight
+                )
             );
 
         window.parent.postMessage(
@@ -2260,7 +2267,13 @@ function resizeStreamlitFrame() {
 
 window.addEventListener(
     "load",
-    resizeStreamlitFrame
+    () => {
+        resizeStreamlitFrame();
+
+        setTimeout(resizeStreamlitFrame, 150);
+        setTimeout(resizeStreamlitFrame, 500);
+        setTimeout(resizeStreamlitFrame, 1200);
+    }
 );
 
 window.addEventListener(
@@ -2313,6 +2326,10 @@ html = html.replace(
 
 components.html(
     html,
-    height=1100,
+    # Large fallback height for phones. Because scrolling=False,
+    # this does NOT create an iframe scrollbar; the normal Streamlit/browser
+    # page scroll is used. The JS above will reduce/adjust the frame height
+    # automatically where Streamlit permits it.
+    height=2200,
     scrolling=False,
 )
