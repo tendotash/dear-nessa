@@ -157,22 +157,22 @@ When the world comes to an end, I hope I get to say, "I had the time of my life 
     },
 
     "2": {
-        "text": """Dear N,
+        "text": """Reminder:
 
-I hope you know just how
-special you are.
+You are kind, you are funny, you are generous.
+You are gentle, you are honest, you are smart.
 
-The smallest moments with
-you can become some of the
-best ones.
+You are caring, and you are cared for.
+You are loving, and you are loved.
 
-Please remember that you are
-more appreciated than you know.""",
+You are God's creation and he creates nothing less than perfect.
+
+You are beautiful, and you are more than enough.""",
         "signature": "Love, R ☺",
-        "song_title": "song two",
-        "artist": "Your Artist Name ♡",
+        "song_title": "who says",
+        "artist": "Selena Gomez ♡",
         "audio": file_to_data_uri("assets/music/letter2.mp3"),
-        "start_time": 77,
+        "start_time": 47,
 
         "polaroids": [
             {
