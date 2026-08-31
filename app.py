@@ -725,6 +725,7 @@ Right = 767 letter + 18 gap + 185 music = 970px
 
 .full-inside {
     height: calc(100% - 46px);
+    min-height: 0;
     padding: 18px 31px;
     overflow: hidden;
 }
@@ -737,12 +738,18 @@ Right = 767 letter + 18 gap + 185 music = 970px
     width: 88%;
     max-width: 650px;
     height: 100%;
+    min-height: 0;
     margin: 0 auto;
 
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 
     padding-right: 10px;
+
+    /* Make the letter independently scrollable on touch devices. */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
 
     scrollbar-gutter: stable;
     scrollbar-width: thin;
@@ -1191,7 +1198,7 @@ Right = 767 letter + 18 gap + 185 music = 970px
 @media (max-width: 650px) {
 
     #letter-app {
-        min-height: 2100px;
+        min-height: 0;
     }
 
     .page {
@@ -1232,19 +1239,30 @@ Right = 767 letter + 18 gap + 185 music = 970px
     }
 
     .full-window {
-        height: 625px;
+        height: 610px;
+        min-height: 610px;
     }
 
     .full-inside {
         height: calc(100% - 46px);
-        padding: 15px 10px 20px;
+        min-height: 0;
+        padding: 12px 8px 14px;
+        overflow: hidden;
     }
 
     .paper-scroll {
-        width: 98%;
+        width: 100%;
         max-width: none;
         height: 100%;
-        padding-right: 7px;
+        min-height: 0;
+        padding-right: 6px;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 
     .paper {
@@ -1253,17 +1271,20 @@ Right = 767 letter + 18 gap + 185 music = 970px
         height: auto;
 
         padding:
-            45px
-            35px
-            40px;
+            38px
+            26px
+            36px;
     }
 
     .letter-text {
         font-size: 15px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
     }
 
     .signature {
         font-size: 15px;
+        overflow-wrap: anywhere;
     }
 
     .paper-sparkle {
@@ -1294,6 +1315,38 @@ Right = 767 letter + 18 gap + 185 music = 970px
 
     .right-controls {
         justify-content: center;
+    }
+}
+
+@media (max-width: 390px) {
+
+    .title {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+    }
+
+    .envelope-item {
+        transform: scale(.78);
+    }
+
+    .full-window {
+        height: 570px;
+        min-height: 570px;
+    }
+
+    .paper {
+        padding:
+            34px
+            21px
+            32px;
+    }
+
+    .letter-text,
+    .signature {
+        font-size: 14px;
     }
 }
 
@@ -1748,6 +1801,8 @@ function updateLetterDisplay(letter) {
             "paper-changing"
         );
 
+        resizeStreamlitFrame();
+
     }, 220);
 }
 
@@ -2166,6 +2221,67 @@ nextButton.addEventListener(
 
 
 /* ========================================================
+   STREAMLIT FRAME HEIGHT
+   Keep one normal page scrollbar on desktop and phone.
+======================================================== */
+
+let frameResizeTimer = null;
+
+function resizeStreamlitFrame() {
+
+    clearTimeout(frameResizeTimer);
+
+    frameResizeTimer = setTimeout(() => {
+
+        const app =
+            document.getElementById("letter-app");
+
+        if (!app) {
+            return;
+        }
+
+        const contentHeight =
+            Math.ceil(
+                app.getBoundingClientRect().height
+            );
+
+        window.parent.postMessage(
+            {
+                isStreamlitMessage: true,
+                type: "streamlit:setFrameHeight",
+                height: contentHeight
+            },
+            "*"
+        );
+
+    }, 40);
+}
+
+
+window.addEventListener(
+    "load",
+    resizeStreamlitFrame
+);
+
+window.addEventListener(
+    "resize",
+    resizeStreamlitFrame
+);
+
+if ("ResizeObserver" in window) {
+
+    const appResizeObserver =
+        new ResizeObserver(
+            resizeStreamlitFrame
+        );
+
+    appResizeObserver.observe(
+        document.getElementById("letter-app")
+    );
+}
+
+
+/* ========================================================
    INITIAL PAGE
    Show letter 1, but DON'T autoplay before any click.
 ======================================================== */
@@ -2174,6 +2290,8 @@ loadLetter(
     "1",
     false
 );
+
+resizeStreamlitFrame();
 
 </script>
 """
