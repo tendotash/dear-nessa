@@ -163,9 +163,11 @@ You are kind, you are funny, you are generous.
 
 You are gentle, you are honest, you are intelligent.
 
+You are capable of change.
+
 You are caring, and you are cared for.
 You are loving, and you are loved.
-You are capable of change.
+
 
 You are God's creation and he creates nothing less than perfect.
 
