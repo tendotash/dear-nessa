@@ -180,11 +180,22 @@ You are beautiful, and you are more than enough.""",
                     "assets/images/letter2/photo1"
                 ),
                 "caption": "",
-                "x": 0,
+                "x": -10,
                 "y": 0,
                 "width": 190,
                 "height": 170,
                 "rotation": -3,
+            },
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter2/photo2"
+                ),
+                "caption": "",
+                "x": 10,
+                "y": 0,
+                "width": 190,
+                "height": 170,
+                "rotation": 3,
             },
         ],
 
