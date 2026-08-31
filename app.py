@@ -13,7 +13,7 @@ st.set_page_config(
     page_title="Letters For You",
     page_icon="💌",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
 
 
@@ -21,12 +21,9 @@ st.set_page_config(
 # AUDIO HELPER
 #
 # Put your songs here:
-#
-# assets/
-# └── music/
-#     ├── letter1.mp3
-#     ├── letter2.mp3
-#     └── letter3.mp3
+# assets/music/letter1.mp3
+# assets/music/letter2.mp3
+# assets/music/letter3.mp3
 # =========================================================
 
 def file_to_data_uri(path_str):
@@ -35,26 +32,15 @@ def file_to_data_uri(path_str):
     if not path.exists():
         return ""
 
-    encoded = base64.b64encode(
-        path.read_bytes()
-    ).decode()
-
+    encoded = base64.b64encode(path.read_bytes()).decode("utf-8")
     return f"data:audio/mpeg;base64,{encoded}"
 
 
 # =========================================================
 # LETTER DATA
-#
-# Each letter has:
-# - letter text
-# - signature
-# - song title
-# - artist
-# - its own music file
 # =========================================================
 
 letter_data = {
-
     "1": {
         "text": """Dear N,
 
@@ -63,18 +49,11 @@ all going to be okay!
 
 Believe in yourself & keep
 going. Good things take time.""",
-
         "signature": "Love, R ♡",
-
         "song_title": "our song",
-
         "artist": "Taylor Swift ♡",
-
-        "audio": file_to_data_uri(
-            "assets/music/letter1.mp3"
-        )
+        "audio": file_to_data_uri("assets/music/letter1.mp3"),
     },
-
 
     "2": {
         "text": """Dear N,
@@ -88,18 +67,11 @@ best ones.
 
 Please remember that you are
 more appreciated than you know.""",
-
         "signature": "Love, R ☺",
-
         "song_title": "song two",
-
         "artist": "Your Artist Name ♡",
-
-        "audio": file_to_data_uri(
-            "assets/music/letter2.mp3"
-        )
+        "audio": file_to_data_uri("assets/music/letter2.mp3"),
     },
-
 
     "3": {
         "text": """Dear N,
@@ -112,267 +84,146 @@ Take your time.
 Keep going.
 And remember to be kind
 to yourself too.""",
-
         "signature": "Love, R ☆",
-
         "song_title": "song three",
-
         "artist": "Your Artist Name ♡",
-
-        "audio": file_to_data_uri(
-            "assets/music/letter3.mp3"
-        )
-    }
-
+        "audio": file_to_data_uri("assets/music/letter3.mp3"),
+    },
 }
-
 
 letters_json = json.dumps(letter_data)
 
 
 # =========================================================
-# REMOVE NORMAL STREAMLIT INTERFACE
+# HIDE STREAMLIT CHROME
 # =========================================================
 
 st.markdown(
     """
     <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
 
-    #MainMenu {
-        visibility: hidden;
-    }
+        .stApp {
+            background:
+                radial-gradient(circle at 12% 15%, rgba(83,41,83,.23), transparent 25%),
+                radial-gradient(circle at 80% 45%, rgba(47,25,63,.22), transparent 35%),
+                #090711;
+        }
 
-    footer {
-        visibility: hidden;
-    }
+        .block-container {
+            padding: 0 !important;
+            max-width: none !important;
+        }
 
-    header {
-        visibility: hidden;
-    }
-
-    .stApp {
-        background:
-            radial-gradient(
-                circle at 12% 15%,
-                rgba(83, 41, 83, .23),
-                transparent 25%
-            ),
-
-            radial-gradient(
-                circle at 80% 45%,
-                rgba(47, 25, 63, .22),
-                transparent 35%
-            ),
-
-            #090711;
-    }
-
-    .block-container {
-        padding-top: 0 !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        padding-bottom: 0 !important;
-        max-width: none !important;
-    }
-
-    iframe {
-        display: block;
-    }
-
+        iframe {
+            display: block;
+        }
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
 
 # =========================================================
-# WEBSITE HTML
+# IMPORTANT
+#
+# This is deliberately NOT an f-string.
+# CSS and JavaScript use lots of { } braces, which caused
+# the "f-string: single '}' is not allowed" error.
+#
+# We insert the Python JSON later with .replace().
 # =========================================================
 
-html = f"""
+html = r"""
 <style>
 
-/* ========================================================
-   GLOBAL
-======================================================== */
-
-* {{
+* {
     box-sizing: border-box;
-}}
+}
 
 html,
-body {{
+body {
     margin: 0;
     padding: 0;
     background: #090711;
-}}
+}
 
-body {{
+body {
     overflow: hidden;
-}}
+}
 
-
-/* ========================================================
-   BACKGROUND
-======================================================== */
-
-#letter-app {{
-
+#letter-app {
     min-height: 1080px;
+    color: #f9e8ee;
+    overflow: hidden;
 
     background:
-
-        radial-gradient(
-            circle at 8% 15%,
-            rgba(255,255,255,.50) 0 1px,
-            transparent 1.5px
-        ),
-
-        radial-gradient(
-            circle at 73% 11%,
-            rgba(247,150,196,.45) 0 1px,
-            transparent 1.4px
-        ),
-
-        radial-gradient(
-            circle at 92% 31%,
-            rgba(255,255,255,.35) 0 1px,
-            transparent 1.5px
-        ),
-
-        radial-gradient(
-            circle at 11% 78%,
-            rgba(235,139,191,.35) 0 1px,
-            transparent 1.4px
-        ),
-
-        radial-gradient(
-            circle at 45% 44%,
-            rgba(237,143,193,.25),
-            transparent 35%
-        ),
-
-        linear-gradient(
-            135deg,
-            #080610 0%,
-            #0d0813 48%,
-            #090710 100%
-        );
-
-    color: #f9e8ee;
-
-    overflow: hidden;
-}}
+        radial-gradient(circle at 8% 15%, rgba(255,255,255,.50) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 73% 11%, rgba(247,150,196,.45) 0 1px, transparent 1.4px),
+        radial-gradient(circle at 92% 31%, rgba(255,255,255,.35) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 11% 78%, rgba(235,139,191,.35) 0 1px, transparent 1.4px),
+        radial-gradient(circle at 45% 44%, rgba(237,143,193,.25), transparent 35%),
+        linear-gradient(135deg, #080610 0%, #0d0813 48%, #090710 100%);
+}
 
 
 /* ========================================================
-   MAIN DESKTOP LAYOUT
+   MAIN LAYOUT
 ======================================================== */
 
-.page {{
-
-    width:
-        min(
-            1390px,
-            calc(100% - 50px)
-        );
-
+.page {
+    width: min(1390px, calc(100% - 50px));
     margin: 0 auto;
 
     display: grid;
-
-    grid-template-columns:
-        500px
-        minmax(0, 1fr);
-
+    grid-template-columns: 500px minmax(0, 1fr);
     column-gap: 45px;
 
     padding-top: 24px;
     padding-bottom: 40px;
-}}
+}
 
-
-.left-column {{
+.left-column {
     min-width: 0;
-}}
+}
 
-
-.right-column {{
-
+.right-column {
     min-width: 0;
-
     display: flex;
-
     flex-direction: column;
-
     gap: 18px;
-}}
-
-
-/* ========================================================
-   DESKTOP HEIGHT ALIGNMENT
-======================================================== */
+}
 
 /*
+LEFT:
+158 intro + 812 envelope = 970
 
-LEFT SIDE HEIGHT:
-
-158px intro
-+
-812px envelope window
-=
-970px
-
-
-RIGHT SIDE HEIGHT:
-
-767px full letter
-+
-18px gap
-+
-185px music window
-=
-970px
-
-Therefore both columns finish at exactly
-the same vertical position.
-
+RIGHT:
+767 letter + 18 gap + 185 music = 970
 */
-
-@media (min-width: 1051px) {{
-
-    .right-column {{
-
+@media (min-width: 1051px) {
+    .right-column {
         height: 970px;
-
         display: grid;
-
-        grid-template-rows:
-            minmax(0, 1fr)
-            185px;
-
+        grid-template-rows: minmax(0, 1fr) 185px;
         gap: 18px;
-    }}
-
-}}
+    }
+}
 
 
 /* ========================================================
    INTRO
 ======================================================== */
 
-.intro {{
-
+.intro {
     min-height: 158px;
-
     padding-left: 5px;
-}}
+}
 
-
-.title {{
-
+.title {
     margin: 0;
-
     color: #ef9abb;
 
     font-family:
@@ -382,30 +233,19 @@ the same vertical position.
         cursive;
 
     font-size: 49px;
-
     font-weight: 400;
-
     line-height: 1;
-
     letter-spacing: 1px;
-}}
+}
 
-
-.title-heart {{
-
+.title-heart {
     display: inline-block;
-
     margin-left: 8px;
-
     font-size: 47px;
+    transform: rotate(-4deg);
+}
 
-    transform:
-        rotate(-4deg);
-}}
-
-
-.subtitle {{
-
+.subtitle {
     margin-top: 22px;
 
     font-family:
@@ -415,34 +255,26 @@ the same vertical position.
         cursive;
 
     font-size: 18px;
-
     line-height: 1.8;
-
     color: #f5d9cc;
-}}
+}
 
-
-.subtitle-heart {{
+.subtitle-heart {
     color: #ee8fb6;
-}}
+}
 
 
 /* ========================================================
    FAKE WINDOWS
 ======================================================== */
 
-.window {{
-
+.window {
     position: relative;
 
-    border:
-        1.25px solid
-        rgba(239,135,181,.9);
-
+    border: 1.25px solid rgba(239,135,181,.9);
     border-radius: 18px;
 
     background:
-
         linear-gradient(
             145deg,
             rgba(16,11,23,.92),
@@ -452,214 +284,128 @@ the same vertical position.
     overflow: hidden;
 
     box-shadow:
+        0 14px 40px rgba(0,0,0,.20),
+        inset 0 0 30px rgba(238,136,182,.015);
+}
 
-        0 14px 40px
-        rgba(0,0,0,.20),
-
-        inset 0 0 30px
-        rgba(238,136,182,.015);
-}}
-
-
-.window-bar {{
-
+.window-bar {
     height: 46px;
 
     display: flex;
-
     justify-content: flex-end;
-
     align-items: center;
 
-    padding:
-        0
-        17px;
-
+    padding: 0 17px;
     gap: 15px;
 
-    border-bottom:
-        1px solid
-        rgba(239,135,181,.67);
-}}
+    border-bottom: 1px solid rgba(239,135,181,.67);
+}
 
-
-.window-control {{
-
+.window-control {
     color: #ee91b7;
-
-    font-family:
-        Arial,
-        sans-serif;
-
+    font-family: Arial, sans-serif;
     font-size: 20px;
-
     font-weight: 300;
-
     line-height: 1;
-}}
+}
 
-
-.fake-square {{
-
+.fake-square {
     width: 15px;
-
     height: 15px;
-
-    border:
-        2px solid
-        #ee91b7;
-
+    border: 2px solid #ee91b7;
     display: inline-block;
-}}
+}
 
 
 /* ========================================================
-   BACKGROUND DECORATIONS
+   DECORATIONS
 ======================================================== */
 
-.sparkle {{
-
+.sparkle {
     position: absolute;
-
     color: #ed91b8;
-
-    font-family:
-        Georgia,
-        serif;
-
+    font-family: Georgia, serif;
     opacity: .9;
-
     pointer-events: none;
-}}
+}
 
-
-.sparkle.one {{
-
+.sparkle.one {
     left: 25px;
-
     top: 205px;
-
     font-size: 24px;
-}}
+}
 
-
-.sparkle.two {{
-
+.sparkle.two {
     right: 13px;
-
     top: 330px;
-
     font-size: 22px;
-}}
+}
 
-
-.sparkle.three {{
-
+.sparkle.three {
     right: 25px;
-
     top: 680px;
-
     font-size: 27px;
-}}
+}
 
-
-.paper-plane {{
-
+.paper-plane {
     position: absolute;
-
     left: 6px;
-
     top: 290px;
-
     color: #df7fa9;
-
     font-size: 34px;
-
-    transform:
-        rotate(-22deg);
-
+    transform: rotate(-22deg);
     opacity: .75;
-}}
+}
 
 
 /* ========================================================
-   LEFT ENVELOPE WINDOW
+   ENVELOPE WINDOW
 ======================================================== */
 
-.envelope-window {{
-
+.envelope-window {
     min-height: 812px;
-
     height: 812px;
-}}
+}
 
-
-.envelope-list {{
-
-    height:
-        calc(
-            100% - 46px
-        );
+.envelope-list {
+    height: calc(100% - 46px);
 
     display: flex;
-
     flex-direction: column;
-
     justify-content: space-evenly;
-
     align-items: center;
 
-    padding:
-        24px
-        25px
-        28px;
-}}
+    padding: 24px 25px 28px;
+}
 
 
 /* ========================================================
-   ENVELOPE ITEM
+   ENVELOPE ITEM + PEEK LETTER
 ======================================================== */
 
-.envelope-item {{
-
+.envelope-item {
     position: relative;
-
     width: 304px;
-
     height: 206px;
 
     cursor: pointer;
-
     isolation: isolate;
-
     outline: none;
-}}
+}
 
-
-/* ========================================================
-   LETTER THAT RISES ON HOVER
-======================================================== */
-
-.peek {{
-
+.peek {
     position: absolute;
-
     z-index: 0;
 
     left: 52px;
-
     bottom: 25px;
 
     width: 200px;
-
     height: 145px;
 
-    padding:
-        22px
-        22px;
+    padding: 22px;
 
     background:
-
         repeating-linear-gradient(
             0deg,
             rgba(126,76,55,.04) 0,
@@ -667,198 +413,116 @@ the same vertical position.
             transparent 1px,
             transparent 26px
         ),
-
         #f5dec2;
 
     color: #292027;
 
-    font-family:
-        "Courier New",
-        monospace;
-
+    font-family: "Courier New", monospace;
     font-size: 13px;
-
     line-height: 1.55;
 
     border-radius: 2px;
-
-    box-shadow:
-        0 12px 24px
-        rgba(0,0,0,.28);
+    box-shadow: 0 12px 24px rgba(0,0,0,.28);
 
     opacity: 0;
-
-    transform:
-        translateY(28px)
-        rotate(-1deg);
+    transform: translateY(28px) rotate(-1deg);
 
     transition:
-
-        transform
-        .55s
-        cubic-bezier(.17,.78,.27,1),
-
-        opacity
-        .25s
-        ease;
-}}
-
+        transform .55s cubic-bezier(.17,.78,.27,1),
+        opacity .25s ease;
+}
 
 .envelope-item:hover .peek,
-.envelope-item:focus .peek {{
-
+.envelope-item:focus .peek {
     opacity: 1;
-
-    transform:
-        translateY(-84px)
-        rotate(-1deg);
-}}
+    transform: translateY(-84px) rotate(-1deg);
+}
 
 
 /* ========================================================
    ENVELOPE BODY
 ======================================================== */
 
-.envelope-object {{
-
+.envelope-object {
     position: absolute;
-
     z-index: 2;
 
     left: 0;
-
     bottom: 0;
 
     width: 304px;
-
     height: 198px;
 
     border-radius: 7px;
-
     overflow: hidden;
 
-    box-shadow:
-        0 16px 30px
-        rgba(0,0,0,.33);
+    box-shadow: 0 16px 30px rgba(0,0,0,.33);
 
     transition:
+        transform .32s ease,
+        filter .32s ease,
+        box-shadow .32s ease;
+}
 
-        transform
-        .32s
-        ease,
-
-        filter
-        .32s
-        ease,
-
-        box-shadow
-        .32s
-        ease;
-}}
-
-
-.envelope-item:hover .envelope-object {{
-
-    transform:
-        translateY(5px)
-        scale(1.015);
-
-    filter:
-        brightness(1.035);
+.envelope-item:hover .envelope-object {
+    transform: translateY(5px) scale(1.015);
+    filter: brightness(1.035);
 
     box-shadow:
+        0 20px 34px rgba(0,0,0,.36),
+        0 0 22px rgba(234,134,179,.10);
+}
 
-        0 20px 34px
-        rgba(0,0,0,.36),
-
-        0 0 22px
-        rgba(234,134,179,.10);
-}}
-
-
-/* ========================================================
-   ENVELOPE PAPER TEXTURE
-======================================================== */
-
-.env-background {{
-
+.env-background {
     position: absolute;
-
     inset: 0;
-}}
+}
 
-
-.env-background::after {{
-
+.env-background::after {
     content: "";
-
     position: absolute;
-
     inset: 0;
 
     opacity: .17;
 
     background:
-
-        radial-gradient(
-            circle at 10% 20%,
-            rgba(255,255,255,.9) 0 1px,
-            transparent 1.5px
-        ),
-
-        radial-gradient(
-            circle at 73% 58%,
-            rgba(63,22,45,.35) 0 1px,
-            transparent 1.5px
-        );
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,.9) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 73% 58%, rgba(63,22,45,.35) 0 1px, transparent 1.5px);
 
     background-size:
         25px 27px,
         31px 34px;
-}}
+}
 
-
-/* ========================================================
-   ENVELOPE COLOURS
-======================================================== */
-
-.env-pink .env-background {{
-
+.env-pink .env-background {
     background:
-
         linear-gradient(
             145deg,
             #ff91b0 0%,
             #ef7fa6 42%,
             #d86e99 100%
         );
-}}
+}
 
-
-.env-cream .env-background {{
-
+.env-cream .env-background {
     background:
-
         linear-gradient(
             145deg,
             #ffe1b1 0%,
             #f4c98e 45%,
             #e8b876 100%
         );
-}}
+}
 
-
-.env-lilac .env-background {{
-
+.env-lilac .env-background {
     background:
-
         linear-gradient(
             145deg,
             #d99ee4 0%,
             #c27ed3 45%,
             #9e65b8 100%
         );
-}}
+}
 
 
 /* ========================================================
@@ -868,26 +532,19 @@ the same vertical position.
 .env-left-fold,
 .env-right-fold,
 .env-bottom-fold,
-.env-flap {{
-
+.env-flap {
     position: absolute;
-}}
+}
 
-
-.env-left-fold {{
-
+.env-left-fold {
     z-index: 3;
-
     left: 0;
-
     bottom: 0;
 
     width: 61%;
-
     height: 75%;
 
     clip-path:
-
         polygon(
             0 0,
             100% 100%,
@@ -895,33 +552,24 @@ the same vertical position.
         );
 
     background:
-
         linear-gradient(
             135deg,
             rgba(255,255,255,.14),
             rgba(0,0,0,.03)
         );
 
-    border-right:
-        1px solid
-        rgba(90,49,76,.23);
-}}
+    border-right: 1px solid rgba(90,49,76,.23);
+}
 
-
-.env-right-fold {{
-
+.env-right-fold {
     z-index: 3;
-
     right: 0;
-
     bottom: 0;
 
     width: 61%;
-
     height: 75%;
 
     clip-path:
-
         polygon(
             100% 0,
             100% 100%,
@@ -929,33 +577,25 @@ the same vertical position.
         );
 
     background:
-
         linear-gradient(
             225deg,
             rgba(255,255,255,.11),
             rgba(0,0,0,.035)
         );
 
-    border-left:
-        1px solid
-        rgba(90,49,76,.20);
-}}
+    border-left: 1px solid rgba(90,49,76,.20);
+}
 
-
-.env-bottom-fold {{
-
+.env-bottom-fold {
     z-index: 4;
 
     left: 0;
-
     bottom: 0;
 
     width: 100%;
-
     height: 66%;
 
     clip-path:
-
         polygon(
             0 100%,
             50% 28%,
@@ -963,33 +603,23 @@ the same vertical position.
         );
 
     background:
-
         linear-gradient(
             to top,
             rgba(255,255,255,.10),
             rgba(255,255,255,.025)
         );
-}}
+}
 
-
-/* ========================================================
-   ENVELOPE TOP FLAP
-======================================================== */
-
-.env-flap {{
-
+.env-flap {
     z-index: 5;
 
     top: 0;
-
     left: 0;
 
     width: 100%;
-
     height: 69%;
 
     clip-path:
-
         polygon(
             0 0,
             100% 0,
@@ -997,62 +627,40 @@ the same vertical position.
         );
 
     background:
-
         linear-gradient(
             180deg,
             rgba(255,255,255,.18),
             rgba(255,255,255,.025)
         );
 
-    filter:
+    filter: drop-shadow(0 5px 3px rgba(64,29,48,.20));
+}
 
-        drop-shadow(
-            0px 5px 3px
-            rgba(64,29,48,.20)
-        );
-}}
-
-
-.env-flap::after {{
-
+.env-flap::after {
     content: "";
-
     position: absolute;
-
-    left: 0;
-
-    top: 0;
-
-    width: 100%;
-
-    height: 100%;
+    inset: 0;
 
     clip-path:
-
         polygon(
             0 0,
             100% 0,
             50% 94%
         );
 
-    border-bottom:
-        2px solid
-        rgba(71,37,62,.25);
-}}
+    border-bottom: 2px solid rgba(71,37,62,.25);
+}
 
 
 /* ========================================================
    ENVELOPE SYMBOLS
 ======================================================== */
 
-.env-symbol {{
-
+.env-symbol {
     position: absolute;
-
     z-index: 9;
 
     right: 22px;
-
     bottom: 21px;
 
     color: #332238;
@@ -1061,121 +669,79 @@ the same vertical position.
         "Segoe Print",
         "Comic Sans MS",
         cursive;
-}}
+}
 
-
-.heart-symbol {{
-
+.heart-symbol {
     font-size: 45px;
-
     line-height: .7;
-}}
+}
 
-
-.smile-symbol {{
-
+.smile-symbol {
     font-size: 38px;
-}}
+}
 
-
-.star-symbol {{
-
+.star-symbol {
     width: 59px;
-
     height: 50px;
 
     position: absolute;
+    z-index: 9;
 
     right: 17px;
-
     bottom: 17px;
+}
 
-    z-index: 9;
-}}
-
-
-.star-symbol span {{
-
+.star-symbol span {
     position: absolute;
-
     color: #352239;
-
     font-size: 37px;
-
     line-height: 1;
-}}
+}
 
-
-.star-symbol span:first-child {{
-
+.star-symbol span:first-child {
     left: 0;
-
     top: 0;
-}}
+}
 
-
-.star-symbol span:last-child {{
-
+.star-symbol span:last-child {
     right: 0;
-
     bottom: -4px;
-
     font-size: 31px;
-}}
+}
 
 
 /* ========================================================
    FULL LETTER WINDOW
 ======================================================== */
 
-.full-window {{
-
+.full-window {
     height: 590px;
-}}
+}
 
-
-/* desktop stretches the letter window */
-
-@media (min-width: 1051px) {{
-
-    .full-window {{
-
+@media (min-width: 1051px) {
+    .full-window {
         height: 100%;
-    }}
+    }
+}
 
-}}
-
-
-.full-inside {{
-
-    height:
-        calc(
-            100% - 46px
-        );
-
-    padding:
-        18px
-        31px
-        18px;
-}}
+.full-inside {
+    height: calc(100% - 46px);
+    padding: 18px 31px;
+}
 
 
 /* ========================================================
-   PAPER / LETTER
+   PAPER
 ======================================================== */
 
-.paper {{
-
+.paper {
     position: relative;
 
     width: 82%;
-
     max-width: 610px;
-
     height: 470px;
 
-    margin:
-        0 auto;
+    margin: 0 auto;
 
     padding:
         48px
@@ -1185,19 +751,8 @@ the same vertical position.
     color: #241d1c;
 
     background:
-
-        radial-gradient(
-            circle at 13% 22%,
-            rgba(126,83,45,.05) 0 1px,
-            transparent 1.5px
-        ),
-
-        radial-gradient(
-            circle at 69% 70%,
-            rgba(126,83,45,.045) 0 1px,
-            transparent 1.5px
-        ),
-
+        radial-gradient(circle at 13% 22%, rgba(126,83,45,.05) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 69% 70%, rgba(126,83,45,.045) 0 1px, transparent 1.5px),
         linear-gradient(
             100deg,
             rgba(172,107,60,.045),
@@ -1205,28 +760,20 @@ the same vertical position.
             rgba(255,255,255,.13) 50%,
             transparent 70%
         ),
-
         #f4d8b6;
 
     background-size:
-
         26px 27px,
-
         31px 33px,
-
         auto,
-
         auto;
 
-
     clip-path:
-
         polygon(
-
             0.5% 4%,
             4% 1.5%,
             9% 2%,
-            14% 0.7%,
+            14% .7%,
             19% 1.5%,
             24% .6%,
             30% 1.5%,
@@ -1279,54 +826,29 @@ the same vertical position.
             1% 12%
         );
 
-
     filter:
-
         drop-shadow(
-            0 13px 15px
-            rgba(0,0,0,.29)
+            0 13px 15px rgba(0,0,0,.29)
         );
 
-
     transition:
+        opacity .25s ease,
+        transform .25s ease;
+}
 
-        opacity
-        .25s
-        ease,
-
-        transform
-        .25s
-        ease;
-}}
-
-
-/* make parchment fill the taller letter window */
-
-@media (min-width: 1051px) {{
-
-    .paper {{
-
+@media (min-width: 1051px) {
+    .paper {
         height: 100%;
+        margin: 0 auto;
+    }
+}
 
-        margin:
-            0 auto;
-    }}
-
-}}
-
-
-.paper.paper-changing {{
-
+.paper.paper-changing {
     opacity: 0;
+    transform: translateY(7px) scale(.99);
+}
 
-    transform:
-        translateY(7px)
-        scale(.99);
-}}
-
-
-.letter-text {{
-
+.letter-text {
     white-space: pre-line;
 
     font-family:
@@ -1334,15 +856,11 @@ the same vertical position.
         monospace;
 
     font-size: 18px;
-
     line-height: 1.65;
-
     letter-spacing: .1px;
-}}
+}
 
-
-.signature {{
-
+.signature {
     margin-top: 25px;
 
     font-family:
@@ -1350,72 +868,46 @@ the same vertical position.
         monospace;
 
     font-size: 18px;
-}}
+}
 
-
-.paper-sparkle {{
-
+.paper-sparkle {
     position: absolute;
 
     right: 25px;
-
     top: 45px;
 
     color: #dc7fa5;
-
     font-size: 31px;
-}}
+}
 
 
 /* ========================================================
-   SEPARATE MUSIC WINDOW
+   MUSIC WINDOW
 ======================================================== */
 
-.player-window {{
-
+.player-window {
     height: 185px;
-}}
+}
 
+.player-inside {
+    height: calc(100% - 46px);
 
-.player-inside {{
-
-    height:
-        calc(
-            100% - 46px
-        );
-
-    padding:
-        18px
-        22px;
+    padding: 18px 22px;
 
     display: flex;
-
     align-items: center;
-}}
+}
 
-
-/* ========================================================
-   MUSIC PLAYER
-======================================================== */
-
-.player {{
-
+.player {
     width: 100%;
-
     height: 100px;
 
-    padding:
-        13px
-        18px;
+    padding: 13px 18px;
 
-    border:
-        1.25px solid
-        rgba(239,135,181,.9);
-
+    border: 1.25px solid rgba(239,135,181,.9);
     border-radius: 16px;
 
-    background:
-        rgba(11,8,18,.91);
+    background: rgba(11,8,18,.91);
 
     display: grid;
 
@@ -1425,17 +917,15 @@ the same vertical position.
         100px;
 
     align-items: center;
-
     column-gap: 16px;
-}}
+}
 
 
 /* ========================================================
-   TRACK INFORMATION
+   TRACK INFO
 ======================================================== */
 
-.track-info {{
-
+.track-info {
     display: grid;
 
     grid-template-columns:
@@ -1443,23 +933,16 @@ the same vertical position.
         1fr;
 
     gap: 8px;
-
     align-items: start;
-}}
+}
 
-
-.music-note {{
-
+.music-note {
     color: #f18fb8;
-
     font-size: 31px;
-
     line-height: 1;
-}}
+}
 
-
-.song-title {{
-
+.song-title {
     color: #f5c4d7;
 
     font-family:
@@ -1468,13 +951,10 @@ the same vertical position.
         cursive;
 
     font-size: 17px;
-}}
+}
 
-
-.artist {{
-
+.artist {
     margin-top: 5px;
-
     color: #e88cad;
 
     font-family:
@@ -1483,71 +963,52 @@ the same vertical position.
         cursive;
 
     font-size: 13px;
-}}
+}
 
 
 /* ========================================================
-   MUSIC CONTROLS
+   PLAYER CONTROLS
 ======================================================== */
 
-.controls-section {{
-
+.controls-section {
     min-width: 0;
-}}
+}
 
-
-.main-controls {{
-
+.main-controls {
     height: 50px;
 
     display: flex;
-
     justify-content: center;
-
     align-items: center;
 
     gap: 31px;
-}}
+}
 
-
-.control-button {{
-
+.control-button {
     appearance: none;
-
     border: 0;
-
     background: transparent;
 
     color: #ef91b7;
-
     cursor: pointer;
 
     padding: 4px;
 
     font-size: 24px;
+    font-family: Arial, sans-serif;
+}
 
-    font-family:
-        Arial,
-        sans-serif;
-}}
-
-
-.play-button {{
-
+.play-button {
     width: 52px;
-
     height: 52px;
 
     border-radius: 50%;
 
     background: #f178a8;
-
     color: #1d111d;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     font-size: 24px;
@@ -1555,33 +1016,21 @@ the same vertical position.
     padding-left: 7px;
 
     transition:
+        transform .18s ease,
+        filter .18s ease;
+}
 
-        transform
-        .18s
-        ease,
-
-        filter
-        .18s
-        ease;
-}}
-
-
-.play-button:hover {{
-
-    transform:
-        scale(1.06);
-
-    filter:
-        brightness(1.06);
-}}
+.play-button:hover {
+    transform: scale(1.06);
+    filter: brightness(1.06);
+}
 
 
 /* ========================================================
-   MUSIC PROGRESS
+   PROGRESS BAR
 ======================================================== */
 
-.progress-row {{
-
+.progress-row {
     display: grid;
 
     grid-template-columns:
@@ -1590,7 +1039,6 @@ the same vertical position.
         42px;
 
     gap: 10px;
-
     align-items: center;
 
     color: #f0c5d4;
@@ -1600,179 +1048,114 @@ the same vertical position.
         monospace;
 
     font-size: 12px;
-}}
+}
 
-
-.progress-track {{
-
+.progress-track {
     position: relative;
 
     height: 4px;
-
     border-radius: 999px;
 
     background: #564052;
-
     cursor: pointer;
-}}
+}
 
-
-.progress-fill {{
+.progress-fill {
+    position: relative;
 
     width: 0%;
-
     height: 100%;
 
     border-radius: inherit;
-
     background: #eb8eb5;
+}
 
-    position: relative;
-}}
-
-
-.progress-dot {{
-
+.progress-dot {
     position: absolute;
 
     right: -5px;
-
     top: -3px;
 
     width: 10px;
-
     height: 10px;
 
     border-radius: 50%;
-
     background: #e98bb3;
-}}
+}
 
-
-/* ========================================================
-   RIGHT PLAYER ICONS
-======================================================== */
-
-.right-controls {{
-
+.right-controls {
     display: flex;
-
     justify-content: flex-end;
-
     align-items: center;
 
     gap: 7px;
 
     color: #e68cb0;
-
     font-size: 23px;
-}}
+}
 
-
-.volume {{
+.volume {
     font-size: 22px;
-}}
+}
 
-
-.player-heart {{
-
-    font-family:
-        Arial,
-        sans-serif;
-
+.player-heart {
+    font-family: Arial, sans-serif;
     font-size: 28px;
-}}
+}
 
 
 /* ========================================================
    TABLET
 ======================================================== */
 
-@media (max-width: 1050px) {{
+@media (max-width: 1050px) {
 
-    #letter-app {{
-
+    #letter-app {
         min-height: 1550px;
-    }}
+    }
 
-
-    .page {{
-
-        width:
-            min(
-                760px,
-                calc(100% - 28px)
-            );
-
+    .page {
+        width: min(760px, calc(100% - 28px));
         grid-template-columns: 1fr;
-
         gap: 18px;
-
         padding-top: 22px;
-    }}
+    }
 
-
-    .right-column {{
-
+    .right-column {
         height: auto;
-
         display: flex;
-
         flex-direction: column;
-
         gap: 18px;
-    }}
+    }
 
-
-    .envelope-window {{
-
+    .envelope-window {
         height: 660px;
-
         min-height: 660px;
-    }}
+    }
 
-
-    .envelope-list {{
-
+    .envelope-list {
         min-height: 612px;
-
-        height:
-            calc(
-                100% - 46px
-            );
+        height: calc(100% - 46px);
 
         flex-direction: row;
-
         flex-wrap: wrap;
-
         align-content: space-around;
 
         gap: 15px;
-    }}
+    }
 
+    .envelope-item {
+        transform: scale(.82);
+        margin: -15px -20px;
+    }
 
-    .envelope-item {{
-
-        transform:
-            scale(.82);
-
-        margin:
-            -15px
-            -20px;
-    }}
-
-
-    .full-window {{
-
+    .full-window {
         height: 625px;
-    }}
+    }
 
-
-    .paper {{
-
+    .paper {
         height: 525px;
-    }}
-
+    }
 }
 
 
@@ -1780,163 +1163,105 @@ the same vertical position.
    PHONE
 ======================================================== */
 
-@media (max-width: 650px) {{
+@media (max-width: 650px) {
 
-    #letter-app {{
-
+    #letter-app {
         min-height: 2100px;
-    }}
+    }
 
-
-    .page {{
-
-        width:
-            calc(
-                100% - 18px
-            );
-
+    .page {
+        width: calc(100% - 18px);
         padding-top: 12px;
-    }}
+    }
 
-
-    .intro {{
-
+    .intro {
         min-height: 140px;
-    }}
+    }
 
-
-    .title {{
-
+    .title {
         font-size: 37px;
-    }}
+    }
 
-
-    .title-heart {{
-
+    .title-heart {
         font-size: 37px;
-    }}
+    }
 
-
-    .subtitle {{
-
+    .subtitle {
         font-size: 14px;
-    }}
+    }
 
-
-    .envelope-window {{
-
+    .envelope-window {
         height: 810px;
-
         min-height: 810px;
-    }}
+    }
 
-
-    .envelope-list {{
-
+    .envelope-list {
         flex-direction: column;
-
         flex-wrap: nowrap;
-
         min-height: 760px;
-    }}
+    }
 
-
-    .envelope-item {{
-
-        transform:
-            scale(.86);
-
+    .envelope-item {
+        transform: scale(.86);
         margin: 0;
-    }}
+    }
 
-
-    .full-window {{
-
+    .full-window {
         height: auto;
-    }}
+    }
 
+    .full-inside {
+        padding: 15px 10px 20px;
+    }
 
-    .full-inside {{
-
-        padding:
-            15px
-            10px
-            20px;
-    }}
-
-
-    .paper {{
-
+    .paper {
         width: 96%;
-
         height: auto;
-
         min-height: 470px;
 
         padding:
             45px
             35px
             40px;
-    }}
+    }
 
-
-    .letter-text {{
-
+    .letter-text {
         font-size: 15px;
-    }}
+    }
 
-
-    .signature {{
-
+    .signature {
         font-size: 15px;
-    }}
+    }
 
-
-    .paper-sparkle {{
-
+    .paper-sparkle {
         display: none;
-    }}
+    }
 
-
-    .player-window {{
-
+    .player-window {
         height: auto;
-    }}
+    }
 
-
-    .player-inside {{
-
+    .player-inside {
         height: auto;
-    }}
+    }
 
-
-    .player {{
-
+    .player {
         width: 100%;
-
         height: auto;
-
         min-height: 165px;
 
         grid-template-columns: 1fr;
-
         gap: 10px;
-    }}
+    }
 
-
-    .track-info {{
-
+    .track-info {
         width: 180px;
-
         margin: auto;
-    }}
+    }
 
-
-    .right-controls {{
-
+    .right-controls {
         justify-content: center;
-    }}
-
+    }
 }
 
 </style>
@@ -1944,100 +1269,49 @@ the same vertical position.
 
 <div id="letter-app">
 
-
-    <!-- DECORATIONS -->
-
-    <div class="sparkle one">
-        ✧
-    </div>
-
-    <div class="sparkle two">
-        ⋆
-    </div>
-
-    <div class="sparkle three">
-        ✦
-    </div>
-
-    <div class="paper-plane">
-        ➤
-    </div>
-
+    <div class="sparkle one">✧</div>
+    <div class="sparkle two">⋆</div>
+    <div class="sparkle three">✦</div>
+    <div class="paper-plane">➤</div>
 
 
     <main class="page">
 
-
-        <!-- =================================================
-             LEFT COLUMN
-        ================================================== -->
+        <!-- LEFT COLUMN -->
 
         <section class="left-column">
-
-
-            <!-- INTRO -->
 
             <header class="intro">
 
                 <h1 class="title">
-
                     Letters For You
-
-                    <span class="title-heart">
-                        ♡
-                    </span>
-
+                    <span class="title-heart">♡</span>
                 </h1>
 
-
                 <div class="subtitle">
-
                     Some things are better written than said.
-
                     <br>
-
                     Choose an envelope whenever you're ready.
-
-                    <span class="subtitle-heart">
-                        ♥
-                    </span>
-
+                    <span class="subtitle-heart">♥</span>
                 </div>
 
             </header>
 
 
-
-            <!-- =================================================
-                 ENVELOPE WINDOW
-            ================================================== -->
+            <!-- ENVELOPE WINDOW -->
 
             <section class="window envelope-window">
 
-
                 <div class="window-bar">
-
-                    <span class="window-control">
-                        −
-                    </span>
-
-                    <span class="fake-square">
-                    </span>
-
-                    <span class="window-control">
-                        ×
-                    </span>
-
+                    <span class="window-control">−</span>
+                    <span class="fake-square"></span>
+                    <span class="window-control">×</span>
                 </div>
-
 
 
                 <div class="envelope-list">
 
-
-                    <!-- =================================================
-                         ENVELOPE 1
-                    ================================================== -->
+                    <!-- LETTER 1 -->
 
                     <div
                         class="envelope-item"
@@ -2045,57 +1319,31 @@ the same vertical position.
                         data-letter="1"
                     >
 
-
                         <div class="peek">
-
                             Dear N,
-
                             <br><br>
-
                             You did great today &amp;
                             it is all going to...
-
                         </div>
-
-
 
                         <div class="envelope-object env-pink">
 
-
-                            <div class="env-background">
-                            </div>
-
-
-                            <div class="env-left-fold">
-                            </div>
-
-
-                            <div class="env-right-fold">
-                            </div>
-
-
-                            <div class="env-bottom-fold">
-                            </div>
-
-
-                            <div class="env-flap">
-                            </div>
-
+                            <div class="env-background"></div>
+                            <div class="env-left-fold"></div>
+                            <div class="env-right-fold"></div>
+                            <div class="env-bottom-fold"></div>
+                            <div class="env-flap"></div>
 
                             <div class="env-symbol heart-symbol">
                                 ♡
                             </div>
-
 
                         </div>
 
                     </div>
 
 
-
-                    <!-- =================================================
-                         ENVELOPE 2
-                    ================================================== -->
+                    <!-- LETTER 2 -->
 
                     <div
                         class="envelope-item"
@@ -2103,57 +1351,31 @@ the same vertical position.
                         data-letter="2"
                     >
 
-
                         <div class="peek">
-
                             Dear N,
-
                             <br><br>
-
                             I hope you know just how
                             special you are...
-
                         </div>
-
-
 
                         <div class="envelope-object env-cream">
 
-
-                            <div class="env-background">
-                            </div>
-
-
-                            <div class="env-left-fold">
-                            </div>
-
-
-                            <div class="env-right-fold">
-                            </div>
-
-
-                            <div class="env-bottom-fold">
-                            </div>
-
-
-                            <div class="env-flap">
-                            </div>
-
+                            <div class="env-background"></div>
+                            <div class="env-left-fold"></div>
+                            <div class="env-right-fold"></div>
+                            <div class="env-bottom-fold"></div>
+                            <div class="env-flap"></div>
 
                             <div class="env-symbol smile-symbol">
                                 ☺
                             </div>
-
 
                         </div>
 
                     </div>
 
 
-
-                    <!-- =================================================
-                         ENVELOPE 3
-                    ================================================== -->
+                    <!-- LETTER 3 -->
 
                     <div
                         class="envelope-item"
@@ -2161,61 +1383,29 @@ the same vertical position.
                         data-letter="3"
                     >
 
-
                         <div class="peek">
-
                             Dear N,
-
                             <br><br>
-
                             This is just a little
                             reminder...
-
                         </div>
-
-
 
                         <div class="envelope-object env-lilac">
 
-
-                            <div class="env-background">
-                            </div>
-
-
-                            <div class="env-left-fold">
-                            </div>
-
-
-                            <div class="env-right-fold">
-                            </div>
-
-
-                            <div class="env-bottom-fold">
-                            </div>
-
-
-                            <div class="env-flap">
-                            </div>
-
-
+                            <div class="env-background"></div>
+                            <div class="env-left-fold"></div>
+                            <div class="env-right-fold"></div>
+                            <div class="env-bottom-fold"></div>
+                            <div class="env-flap"></div>
 
                             <div class="star-symbol">
-
-                                <span>
-                                    ☆
-                                </span>
-
-                                <span>
-                                    ☆
-                                </span>
-
+                                <span>☆</span>
+                                <span>☆</span>
                             </div>
-
 
                         </div>
 
                     </div>
-
 
                 </div>
 
@@ -2224,131 +1414,74 @@ the same vertical position.
         </section>
 
 
-
-        <!-- =================================================
-             RIGHT COLUMN
-        ================================================== -->
+        <!-- RIGHT COLUMN -->
 
         <section class="right-column">
 
 
-            <!-- =================================================
-                 FULL LETTER WINDOW
-            ================================================== -->
+            <!-- FULL LETTER -->
 
             <section class="window full-window">
 
-
                 <div class="window-bar">
-
-                    <span class="window-control">
-                        −
-                    </span>
-
-                    <span class="fake-square">
-                    </span>
-
-                    <span class="window-control">
-                        ×
-                    </span>
-
+                    <span class="window-control">−</span>
+                    <span class="fake-square"></span>
+                    <span class="window-control">×</span>
                 </div>
 
 
-
                 <div class="full-inside">
-
 
                     <article
                         class="paper"
                         id="paper"
                     >
 
-
                         <div
                             class="letter-text"
                             id="letterText"
-                        >Dear N,
-
-You did great today & it is
-all going to be okay!
-
-Believe in yourself & keep
-going. Good things take time.</div>
-
-
+                        ></div>
 
                         <div
                             class="signature"
                             id="signature"
-                        >
-                            Love, R ♡
-                        </div>
-
-
+                        ></div>
 
                         <div class="paper-sparkle">
-
                             ✧
-
                             <br>
-
                             ✦
-
                         </div>
 
-
                     </article>
-
 
                 </div>
 
             </section>
 
 
-
-            <!-- =================================================
-                 SEPARATE MUSIC WINDOW
-            ================================================== -->
+            <!-- MUSIC WINDOW -->
 
             <section class="window player-window">
 
-
                 <div class="window-bar">
-
-                    <span class="window-control">
-                        −
-                    </span>
-
-                    <span class="fake-square">
-                    </span>
-
-                    <span class="window-control">
-                        ×
-                    </span>
-
+                    <span class="window-control">−</span>
+                    <span class="fake-square"></span>
+                    <span class="window-control">×</span>
                 </div>
-
 
 
                 <div class="player-inside">
 
-
                     <section class="player">
 
-
-                        <!-- TRACK NAME -->
-
                         <div class="track-info">
-
 
                             <div class="music-note">
                                 ♫
                             </div>
 
-
                             <div>
-
 
                                 <div
                                     class="song-title"
@@ -2357,7 +1490,6 @@ going. Good things take time.</div>
                                     our song
                                 </div>
 
-
                                 <div
                                     class="artist"
                                     id="artist"
@@ -2365,21 +1497,14 @@ going. Good things take time.</div>
                                     Taylor Swift ♡
                                 </div>
 
-
                             </div>
-
 
                         </div>
 
 
-
-                        <!-- PLAYER CONTROLS -->
-
                         <div class="controls-section">
 
-
                             <div class="main-controls">
-
 
                                 <button
                                     type="button"
@@ -2389,8 +1514,6 @@ going. Good things take time.</div>
                                     |◀
                                 </button>
 
-
-
                                 <button
                                     type="button"
                                     class="control-button play-button"
@@ -2398,8 +1521,6 @@ going. Good things take time.</div>
                                 >
                                     ▶
                                 </button>
-
-
 
                                 <button
                                     type="button"
@@ -2409,75 +1530,51 @@ going. Good things take time.</div>
                                     ▶|
                                 </button>
 
-
                             </div>
 
 
-
-                            <!-- PROGRESS -->
-
                             <div class="progress-row">
-
 
                                 <span id="currentTime">
                                     0:00
                                 </span>
-
-
 
                                 <div
                                     class="progress-track"
                                     id="progressTrack"
                                 >
 
-
                                     <div
                                         class="progress-fill"
                                         id="progressFill"
                                     >
-
-                                        <div class="progress-dot">
-                                        </div>
-
+                                        <div class="progress-dot"></div>
                                     </div>
 
-
                                 </div>
-
-
 
                                 <span id="totalTime">
                                     0:00
                                 </span>
 
-
                             </div>
-
 
                         </div>
 
 
-
-                        <!-- RIGHT ICONS -->
-
                         <div class="right-controls">
-
 
                             <span class="volume">
                                 ◖))
                             </span>
 
-
                             <span class="player-heart">
                                 ♡
                             </span>
 
-
                         </div>
 
-
                     </section>
-
 
 
                     <audio
@@ -2485,42 +1582,28 @@ going. Good things take time.</div>
                         preload="metadata"
                     ></audio>
 
-
                 </div>
 
             </section>
 
-
         </section>
-
 
     </main>
 
 </div>
 
 
-
 <script>
 
 /* ========================================================
-   LETTER DATA FROM PYTHON
+   LETTER DATA
 ======================================================== */
 
-const letters =
-    {letters_json};
+const letters = __LETTERS_JSON__;
 
+const order = ["1", "2", "3"];
 
-const order =
-    [
-        "1",
-        "2",
-        "3"
-    ];
-
-
-let currentLetterId =
-    "1";
-
+let currentLetterId = "1";
 
 
 /* ========================================================
@@ -2528,264 +1611,158 @@ let currentLetterId =
 ======================================================== */
 
 const envelopes =
-    document.querySelectorAll(
-        ".envelope-item"
-    );
-
+    document.querySelectorAll(".envelope-item");
 
 const paper =
-    document.getElementById(
-        "paper"
-    );
-
+    document.getElementById("paper");
 
 const letterText =
-    document.getElementById(
-        "letterText"
-    );
-
+    document.getElementById("letterText");
 
 const signature =
-    document.getElementById(
-        "signature"
-    );
-
+    document.getElementById("signature");
 
 const songTitle =
-    document.getElementById(
-        "songTitle"
-    );
-
+    document.getElementById("songTitle");
 
 const artist =
-    document.getElementById(
-        "artist"
-    );
-
+    document.getElementById("artist");
 
 const audio =
-    document.getElementById(
-        "audio"
-    );
-
+    document.getElementById("audio");
 
 const playButton =
-    document.getElementById(
-        "playButton"
-    );
-
+    document.getElementById("playButton");
 
 const prevButton =
-    document.getElementById(
-        "prevButton"
-    );
-
+    document.getElementById("prevButton");
 
 const nextButton =
-    document.getElementById(
-        "nextButton"
-    );
-
+    document.getElementById("nextButton");
 
 const progressTrack =
-    document.getElementById(
-        "progressTrack"
-    );
-
+    document.getElementById("progressTrack");
 
 const progressFill =
-    document.getElementById(
-        "progressFill"
-    );
-
+    document.getElementById("progressFill");
 
 const currentTimeLabel =
-    document.getElementById(
-        "currentTime"
-    );
-
+    document.getElementById("currentTime");
 
 const totalTimeLabel =
-    document.getElementById(
-        "totalTime"
-    );
-
+    document.getElementById("totalTime");
 
 
 /* ========================================================
-   FORMAT AUDIO TIME
+   TIME FORMATTER
 ======================================================== */
 
-function formatTime(seconds) {{
+function formatTime(seconds) {
 
-    if (
-        !Number.isFinite(seconds)
-    ) {{
-
+    if (!Number.isFinite(seconds)) {
         return "0:00";
-
-    }}
-
+    }
 
     const minutes =
-        Math.floor(
-            seconds / 60
-        );
-
+        Math.floor(seconds / 60);
 
     const secs =
-        Math.floor(
-            seconds % 60
-        )
+        Math.floor(seconds % 60)
         .toString()
-        .padStart(
-            2,
-            "0"
-        );
+        .padStart(2, "0");
 
-
-    return `${{minutes}}:${{secs}}`;
-
-}}
-
+    return `${minutes}:${secs}`;
+}
 
 
 /* ========================================================
-   OPEN LETTER
+   LOAD LETTER + ITS SONG
 ======================================================== */
 
-function loadLetter(id) {{
+function loadLetter(id) {
 
-    currentLetterId =
-        id;
+    currentLetterId = id;
 
-
-    const letter =
-        letters[id];
-
-
-    /* fade paper */
+    const letter = letters[id];
 
     paper.classList.add(
         "paper-changing"
     );
 
+    setTimeout(() => {
 
-    setTimeout(
-        () => {{
+        letterText.textContent =
+            letter.text;
 
-            letterText.textContent =
-                letter.text;
+        signature.textContent =
+            letter.signature;
 
+        songTitle.textContent =
+            letter.song_title;
 
-            signature.textContent =
-                letter.signature;
+        artist.textContent =
+            letter.artist;
 
+        paper.classList.remove(
+            "paper-changing"
+        );
 
-            songTitle.textContent =
-                letter.song_title;
+    }, 220);
 
-
-            artist.textContent =
-                letter.artist;
-
-
-            paper.classList.remove(
-                "paper-changing"
-            );
-
-        }},
-        220
-    );
-
-
-    /* stop previous song */
 
     audio.pause();
 
-
-    playButton.textContent =
-        "▶";
-
-
-    /* assign this letter's song */
+    playButton.textContent = "▶";
 
     audio.src =
         letter.audio || "";
 
-
     audio.load();
-
 
     progressFill.style.width =
         "0%";
 
-
     currentTimeLabel.textContent =
         "0:00";
 
-
     totalTimeLabel.textContent =
         "0:00";
-
 }
 
 
-
 /* ========================================================
-   ENVELOPE CLICKS
+   ENVELOPE EVENTS
 ======================================================== */
 
-envelopes.forEach(
+envelopes.forEach(envelope => {
 
-    envelope => {{
+    envelope.addEventListener(
+        "click",
+        () => {
+            loadLetter(
+                envelope.dataset.letter
+            );
+        }
+    );
 
+    envelope.addEventListener(
+        "keydown",
+        event => {
 
-        envelope.addEventListener(
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
 
-            "click",
-
-            () => {{
+                event.preventDefault();
 
                 loadLetter(
                     envelope.dataset.letter
                 );
-
-            }}
-
-        );
-
-
-
-        envelope.addEventListener(
-
-            "keydown",
-
-            event => {{
-
-                if (
-                    event.key === "Enter" ||
-                    event.key === " "
-                ) {{
-
-                    event.preventDefault();
-
-
-                    loadLetter(
-                        envelope.dataset.letter
-                    );
-
-                }}
-
-            }}
-
-        );
-
-
-    }}
-
-);
-
+            }
+        }
+    );
+});
 
 
 /* ========================================================
@@ -2793,92 +1770,54 @@ envelopes.forEach(
 ======================================================== */
 
 playButton.addEventListener(
-
     "click",
+    async () => {
 
-    async () => {{
-
-
-        /*
-        If no MP3 has been uploaded yet,
-        there is nothing to play.
-        */
-
-        if (
-            !audio.src
-        ) {{
-
+        if (!audio.src) {
             return;
+        }
 
-        }}
+        if (audio.paused) {
 
-
-        if (
-            audio.paused
-        ) {{
-
-
-            try {{
+            try {
 
                 await audio.play();
-
 
                 playButton.textContent =
                     "❚❚";
 
-            }}
-
-
-            catch (error) {{
+            } catch (error) {
 
                 console.log(
                     "Audio playback could not start."
                 );
+            }
 
-            }}
-
-
-        }}
-
-
-        else {{
-
+        } else {
 
             audio.pause();
 
-
             playButton.textContent =
                 "▶";
-
-
-        }}
-
-
-    }}
-
+        }
+    }
 );
 
 
-
 /* ========================================================
-   AUDIO DURATION
+   AUDIO METADATA
 ======================================================== */
 
 audio.addEventListener(
-
     "loadedmetadata",
-
-    () => {{
+    () => {
 
         totalTimeLabel.textContent =
             formatTime(
                 audio.duration
             );
-
-    }}
-
+    }
 );
-
 
 
 /* ========================================================
@@ -2886,140 +1825,79 @@ audio.addEventListener(
 ======================================================== */
 
 audio.addEventListener(
-
     "timeupdate",
-
-    () => {{
-
+    () => {
 
         currentTimeLabel.textContent =
             formatTime(
                 audio.currentTime
             );
 
-
         if (
-
-            Number.isFinite(
-                audio.duration
-            )
-
-            &&
-
+            Number.isFinite(audio.duration) &&
             audio.duration > 0
-
-        ) {{
-
+        ) {
 
             const percent =
-
                 (
                     audio.currentTime /
                     audio.duration
-                )
-
-                * 100;
-
+                ) * 100;
 
             progressFill.style.width =
-                `${{percent}}%`;
-
-        }}
-
-
-    }}
-
+                `${percent}%`;
+        }
+    }
 );
 
 
-
 /* ========================================================
-   SONG ENDED
+   AUDIO ENDED
 ======================================================== */
 
 audio.addEventListener(
-
     "ended",
-
-    () => {{
-
+    () => {
         playButton.textContent =
             "▶";
-
-    }}
-
+    }
 );
-
 
 
 /* ========================================================
-   CLICK PROGRESS BAR TO SEEK
+   CLICK PROGRESS BAR
 ======================================================== */
 
 progressTrack.addEventListener(
-
     "click",
-
-    event => {{
-
+    event => {
 
         if (
-
-            !Number.isFinite(
-                audio.duration
-            )
-
-            ||
-
+            !Number.isFinite(audio.duration) ||
             audio.duration <= 0
-
-        ) {{
-
+        ) {
             return;
-
-        }}
-
+        }
 
         const rect =
-
-            progressTrack
-            .getBoundingClientRect();
-
+            progressTrack.getBoundingClientRect();
 
         const ratio =
-
             Math.min(
-
                 1,
-
                 Math.max(
-
                     0,
-
                     (
                         event.clientX -
                         rect.left
-                    )
-
-                    /
-
-                    rect.width
-
+                    ) / rect.width
                 )
-
             );
 
-
         audio.currentTime =
-
-            ratio *
-            audio.duration;
-
-
-    }}
-
+            ratio * audio.duration;
+    }
 );
-
 
 
 /* ========================================================
@@ -3027,41 +1905,26 @@ progressTrack.addEventListener(
 ======================================================== */
 
 prevButton.addEventListener(
-
     "click",
-
-    () => {{
-
+    () => {
 
         let index =
-
             order.indexOf(
                 currentLetterId
             );
 
-
         index =
-
             (
                 index -
                 1 +
                 order.length
-            )
-
-            %
-
-            order.length;
-
+            ) % order.length;
 
         loadLetter(
             order[index]
         );
-
-
-    }}
-
+    }
 );
-
 
 
 /* ========================================================
@@ -3069,64 +1932,52 @@ prevButton.addEventListener(
 ======================================================== */
 
 nextButton.addEventListener(
-
     "click",
-
-    () => {{
-
+    () => {
 
         let index =
-
             order.indexOf(
                 currentLetterId
             );
 
-
         index =
-
             (
-                index +
-                1
-            )
-
-            %
-
-            order.length;
-
+                index + 1
+            ) % order.length;
 
         loadLetter(
             order[index]
         );
-
-
-    }}
-
+    }
 );
-
 
 
 /* ========================================================
-   DEFAULT LETTER
+   DEFAULT
 ======================================================== */
 
-loadLetter(
-    "1"
-);
+loadLetter("1");
 
 </script>
 """
 
 
 # =========================================================
-# RENDER WEBSITE
-#
-# scrolling=False means:
-# NO second scrollbar inside the website.
-# The normal Streamlit/browser scrollbar is used.
+# INSERT JSON SAFELY
+# =========================================================
+
+html = html.replace(
+    "__LETTERS_JSON__",
+    letters_json,
+)
+
+
+# =========================================================
+# RENDER
 # =========================================================
 
 components.html(
     html,
     height=1100,
-    scrolling=False
+    scrolling=False,
 )
