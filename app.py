@@ -51,8 +51,9 @@ and it was as though the sky was an aircon. How cute it was when the villagers
 waved at us on the Puffing Billy. How cool it was seeing cows, sheeps and
 the 12 apostles at Great Ocean Road.
 
-There is so much more we have yet to experience.
-And I look forward to more firsts with you.
+And Mr Summit's Flat White and Toasties? Wew, there will be so many more Mr Summits to discover!
+
+There is so much more we have yet to experience. And I look forward to more firsts with you.
 
 When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!♡" """,
         "signature": "Love, R ♡",
