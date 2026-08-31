@@ -19,11 +19,6 @@ st.set_page_config(
 
 # =========================================================
 # AUDIO HELPER
-#
-# Put your songs here:
-# assets/music/letter1.mp3
-# assets/music/letter2.mp3
-# assets/music/letter3.mp3
 # =========================================================
 
 def file_to_data_uri(path_str):
@@ -37,7 +32,14 @@ def file_to_data_uri(path_str):
 
 
 # =========================================================
-# LETTER DATA
+# LETTERS + MUSIC
+#
+# start_time is in SECONDS.
+#
+# Examples:
+# 0:42 = 42
+# 1:17 = 77
+# 2:05 = 125
 # =========================================================
 
 letter_data = {
@@ -53,6 +55,7 @@ going. Good things take time.""",
         "song_title": "our song",
         "artist": "Taylor Swift ♡",
         "audio": file_to_data_uri("assets/music/letter1.mp3"),
+        "start_time": 42,
     },
 
     "2": {
@@ -71,6 +74,7 @@ more appreciated than you know.""",
         "song_title": "song two",
         "artist": "Your Artist Name ♡",
         "audio": file_to_data_uri("assets/music/letter2.mp3"),
+        "start_time": 77,
     },
 
     "3": {
@@ -88,6 +92,7 @@ to yourself too.""",
         "song_title": "song three",
         "artist": "Your Artist Name ♡",
         "audio": file_to_data_uri("assets/music/letter3.mp3"),
+        "start_time": 125,
     },
 }
 
@@ -95,7 +100,7 @@ letters_json = json.dumps(letter_data)
 
 
 # =========================================================
-# HIDE STREAMLIT CHROME
+# HIDE NORMAL STREAMLIT UI
 # =========================================================
 
 st.markdown(
@@ -127,13 +132,11 @@ st.markdown(
 
 
 # =========================================================
-# IMPORTANT
+# WEBSITE
 #
-# This is deliberately NOT an f-string.
-# CSS and JavaScript use lots of { } braces, which caused
-# the "f-string: single '}' is not allowed" error.
-#
-# We insert the Python JSON later with .replace().
+# IMPORTANT:
+# This is NOT an f-string. CSS and JavaScript contain lots
+# of { } braces. We insert the JSON later using .replace().
 # =========================================================
 
 html = r"""
@@ -197,11 +200,8 @@ body {
 }
 
 /*
-LEFT:
-158 intro + 812 envelope = 970
-
-RIGHT:
-767 letter + 18 gap + 185 music = 970
+Left = 158 intro + 812 envelope window = 970px
+Right = 767 letter + 18 gap + 185 music = 970px
 */
 @media (min-width: 1051px) {
     .right-column {
@@ -380,7 +380,7 @@ RIGHT:
 
 
 /* ========================================================
-   ENVELOPE ITEM + PEEK LETTER
+   ENVELOPE + HOVER LETTER
 ======================================================== */
 
 .envelope-item {
@@ -402,7 +402,6 @@ RIGHT:
 
     width: 200px;
     height: 145px;
-
     padding: 22px;
 
     background:
@@ -437,11 +436,6 @@ RIGHT:
     opacity: 1;
     transform: translateY(-84px) rotate(-1deg);
 }
-
-
-/* ========================================================
-   ENVELOPE BODY
-======================================================== */
 
 .envelope-object {
     position: absolute;
@@ -731,7 +725,7 @@ RIGHT:
 
 
 /* ========================================================
-   PAPER
+   LETTER PAPER
 ======================================================== */
 
 .paper {
@@ -920,11 +914,6 @@ RIGHT:
     column-gap: 16px;
 }
 
-
-/* ========================================================
-   TRACK INFO
-======================================================== */
-
 .track-info {
     display: grid;
 
@@ -967,7 +956,7 @@ RIGHT:
 
 
 /* ========================================================
-   PLAYER CONTROLS
+   MUSIC CONTROLS
 ======================================================== */
 
 .controls-section {
@@ -1012,7 +1001,6 @@ RIGHT:
     justify-content: center;
 
     font-size: 24px;
-
     padding-left: 7px;
 
     transition:
@@ -1024,11 +1012,6 @@ RIGHT:
     transform: scale(1.06);
     filter: brightness(1.06);
 }
-
-
-/* ========================================================
-   PROGRESS BAR
-======================================================== */
 
 .progress-row {
     display: grid;
@@ -1298,7 +1281,7 @@ RIGHT:
             </header>
 
 
-            <!-- ENVELOPE WINDOW -->
+            <!-- ENVELOPES -->
 
             <section class="window envelope-window">
 
@@ -1460,7 +1443,7 @@ RIGHT:
             </section>
 
 
-            <!-- MUSIC WINDOW -->
+            <!-- MUSIC PLAYER -->
 
             <section class="window player-window">
 
@@ -1596,11 +1579,10 @@ RIGHT:
 <script>
 
 /* ========================================================
-   LETTER DATA
+   DATA
 ======================================================== */
 
 const letters = __LETTERS_JSON__;
-
 const order = ["1", "2", "3"];
 
 let currentLetterId = "1";
@@ -1654,7 +1636,7 @@ const totalTimeLabel =
 
 
 /* ========================================================
-   TIME FORMATTER
+   TIME FORMAT
 ======================================================== */
 
 function formatTime(seconds) {
@@ -1676,14 +1658,10 @@ function formatTime(seconds) {
 
 
 /* ========================================================
-   LOAD LETTER + ITS SONG
+   LETTER DISPLAY
 ======================================================== */
 
-function loadLetter(id) {
-
-    currentLetterId = id;
-
-    const letter = letters[id];
+function updateLetterDisplay(letter) {
 
     paper.classList.add(
         "paper-changing"
@@ -1708,16 +1686,19 @@ function loadLetter(id) {
         );
 
     }, 220);
+}
 
+
+/* ========================================================
+   LOAD MUSIC AT ASSIGNED START TIME
+======================================================== */
+
+async function loadSong(letter, shouldAutoplay) {
 
     audio.pause();
 
-    playButton.textContent = "▶";
-
-    audio.src =
-        letter.audio || "";
-
-    audio.load();
+    playButton.textContent =
+        "▶";
 
     progressFill.style.width =
         "0%";
@@ -1727,11 +1708,177 @@ function loadLetter(id) {
 
     totalTimeLabel.textContent =
         "0:00";
+
+
+    if (!letter.audio) {
+
+        audio.removeAttribute("src");
+        audio.load();
+
+        return;
+    }
+
+
+    const startTime =
+        Math.max(
+            0,
+            Number(letter.start_time) || 0
+        );
+
+
+    /*
+    Mute while loading so the visitor does not hear the
+    first fraction of the song before the seek finishes.
+    */
+
+    audio.volume = 0;
+
+    audio.src =
+        letter.audio;
+
+    audio.load();
+
+
+    /*
+    IMPORTANT:
+    audio.play() is called immediately from the click
+    interaction. This gives browsers the best chance of
+    allowing automatic playback.
+    */
+
+    let playPromise = null;
+
+    if (shouldAutoplay) {
+
+        try {
+
+            playPromise =
+                audio.play();
+
+        } catch (error) {
+
+            console.log(
+                "Playback could not be requested."
+            );
+        }
+    }
+
+
+    const prepareStartPosition = () => {
+
+        const safeStart =
+            Number.isFinite(audio.duration) &&
+            audio.duration > 0
+                ? Math.min(
+                    startTime,
+                    Math.max(
+                        0,
+                        audio.duration - 0.05
+                    )
+                )
+                : startTime;
+
+
+        audio.currentTime =
+            safeStart;
+
+
+        currentTimeLabel.textContent =
+            formatTime(safeStart);
+
+
+        /*
+        Wait until the seek has finished before unmuting.
+        */
+
+        const unmute = () => {
+            audio.volume = 1;
+        };
+
+
+        if (Math.abs(audio.currentTime - safeStart) < 0.15) {
+            audio.volume = 1;
+        } else {
+            audio.addEventListener(
+                "seeked",
+                unmute,
+                { once: true }
+            );
+        }
+    };
+
+
+    if (audio.readyState >= 1) {
+
+        prepareStartPosition();
+
+    } else {
+
+        audio.addEventListener(
+            "loadedmetadata",
+            prepareStartPosition,
+            { once: true }
+        );
+    }
+
+
+    if (
+        shouldAutoplay &&
+        playPromise &&
+        typeof playPromise.then === "function"
+    ) {
+
+        try {
+
+            await playPromise;
+
+            playButton.textContent =
+                "❚❚";
+
+        } catch (error) {
+
+            /*
+            Some browsers may still block autoplay.
+            The song will remain positioned at the assigned
+            start time, and the visitor can press Play.
+            */
+
+            playButton.textContent =
+                "▶";
+
+            console.log(
+                "Browser blocked automatic playback."
+            );
+        }
+    }
 }
 
 
 /* ========================================================
-   ENVELOPE EVENTS
+   OPEN A LETTER
+======================================================== */
+
+async function loadLetter(id, shouldAutoplay) {
+
+    currentLetterId =
+        id;
+
+    const letter =
+        letters[id];
+
+    updateLetterDisplay(
+        letter
+    );
+
+    await loadSong(
+        letter,
+        shouldAutoplay
+    );
+}
+
+
+/* ========================================================
+   ENVELOPE CLICK
 ======================================================== */
 
 envelopes.forEach(envelope => {
@@ -1739,11 +1886,14 @@ envelopes.forEach(envelope => {
     envelope.addEventListener(
         "click",
         () => {
+
             loadLetter(
-                envelope.dataset.letter
+                envelope.dataset.letter,
+                true
             );
         }
     );
+
 
     envelope.addEventListener(
         "keydown",
@@ -1757,7 +1907,8 @@ envelopes.forEach(envelope => {
                 event.preventDefault();
 
                 loadLetter(
-                    envelope.dataset.letter
+                    envelope.dataset.letter,
+                    true
                 );
             }
         }
@@ -1773,7 +1924,7 @@ playButton.addEventListener(
     "click",
     async () => {
 
-        if (!audio.src) {
+        if (!audio.getAttribute("src")) {
             return;
         }
 
@@ -1805,7 +1956,7 @@ playButton.addEventListener(
 
 
 /* ========================================================
-   AUDIO METADATA
+   METADATA / DURATION
 ======================================================== */
 
 audio.addEventListener(
@@ -1852,12 +2003,13 @@ audio.addEventListener(
 
 
 /* ========================================================
-   AUDIO ENDED
+   SONG ENDED
 ======================================================== */
 
 audio.addEventListener(
     "ended",
     () => {
+
         playButton.textContent =
             "▶";
     }
@@ -1901,7 +2053,7 @@ progressTrack.addEventListener(
 
 
 /* ========================================================
-   PREVIOUS LETTER
+   PREVIOUS / NEXT LETTER
 ======================================================== */
 
 prevButton.addEventListener(
@@ -1921,15 +2073,12 @@ prevButton.addEventListener(
             ) % order.length;
 
         loadLetter(
-            order[index]
+            order[index],
+            true
         );
     }
 );
 
-
-/* ========================================================
-   NEXT LETTER
-======================================================== */
 
 nextButton.addEventListener(
     "click",
@@ -1946,24 +2095,29 @@ nextButton.addEventListener(
             ) % order.length;
 
         loadLetter(
-            order[index]
+            order[index],
+            true
         );
     }
 );
 
 
 /* ========================================================
-   DEFAULT
+   INITIAL PAGE
+   Show letter 1, but DON'T autoplay before any click.
 ======================================================== */
 
-loadLetter("1");
+loadLetter(
+    "1",
+    false
+);
 
 </script>
 """
 
 
 # =========================================================
-# INSERT JSON SAFELY
+# INSERT PYTHON DATA INTO HTML SAFELY
 # =========================================================
 
 html = html.replace(
