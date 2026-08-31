@@ -31,42 +31,8 @@ def file_to_data_uri(path_str):
     return f"data:audio/mpeg;base64,{encoded}"
 
 
-def image_asset_data_uri(path_without_extension):
-    """
-    Lets you upload .jpg, .jpeg, .png, or .webp images without
-    changing the Python code's base filename.
-    Example:
-        assets/images/letter1/photo1.jpg
-        assets/images/letter1/photo1.png
-    Both can be referenced as:
-        image_asset_data_uri("assets/images/letter1/photo1")
-    """
-
-    supported = [
-        (".jpg", "image/jpeg"),
-        (".jpeg", "image/jpeg"),
-        (".png", "image/png"),
-        (".webp", "image/webp"),
-    ]
-
-    for extension, mime_type in supported:
-        path = Path(path_without_extension + extension)
-
-        if path.exists():
-            encoded = base64.b64encode(
-                path.read_bytes()
-            ).decode("utf-8")
-
-            return (
-                f"data:{mime_type};base64,"
-                f"{encoded}"
-            )
-
-    return ""
-
-
 # =========================================================
-# LETTERS + MUSIC + OPTIONAL POLAROIDS / STAMPS
+# LETTERS + MUSIC
 #
 # start_time is in SECONDS.
 #
@@ -78,59 +44,18 @@ def image_asset_data_uri(path_without_extension):
 
 letter_data = {
     "1": {
-        "text": '''When you lose sight of purpose, remember Melbourne.
+        "text": """Dear N,
 
-Think of how alive you felt. How intriguing it was when we exited the airport
-and it was as though the sky was an aircon. How cute it was when the villagers
-waved at us on the Puffing Billy. How cool it was seeing cows, sheeps and
-the 12 apostles at Great Ocean Road.
+You did great today & it is
+all going to be okay!
 
-And Mr Summit's Flat White and Toasties? Wew, there will be so many more Mr Summits to discover!
-
-There is so much more we have yet to experience. And I look forward to more firsts with you.
-
-When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!<3"''',
+Believe in yourself & keep
+going. Good things take time.""",
         "signature": "Love, R ♡",
-        "song_title": "long live",
+        "song_title": "our song",
         "artist": "Taylor Swift ♡",
         "audio": file_to_data_uri("assets/music/letter1.mp3"),
-        "start_time": 173,
-
-        # OPTIONAL POLAROIDS
-        # Upload these as .jpg, .jpeg, .png, or .webp.
-        # If a file does not exist, it simply will not appear.
-        "polaroids": [
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter1/photo1"
-                ),
-                "caption": "Melbourne ♡",
-                "rotation": -4,
-            },
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter1/photo2"
-                ),
-                "caption": "another little memory",
-                "rotation": 3,
-            },
-        ],
-
-        # OPTIONAL STAMPS
-        "stamps": [
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter1/stamp1"
-                ),
-                "rotation": 7,
-            },
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter1/stamp2"
-                ),
-                "rotation": -5,
-            },
-        ],
+        "start_time": 42,
     },
 
     "2": {
@@ -150,25 +75,6 @@ more appreciated than you know.""",
         "artist": "Your Artist Name ♡",
         "audio": file_to_data_uri("assets/music/letter2.mp3"),
         "start_time": 77,
-
-        "polaroids": [
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter2/photo1"
-                ),
-                "caption": "",
-                "rotation": -3,
-            },
-        ],
-
-        "stamps": [
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter2/stamp1"
-                ),
-                "rotation": 5,
-            },
-        ],
     },
 
     "3": {
@@ -187,25 +93,6 @@ to yourself too.""",
         "artist": "Your Artist Name ♡",
         "audio": file_to_data_uri("assets/music/letter3.mp3"),
         "start_time": 125,
-
-        "polaroids": [
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter3/photo1"
-                ),
-                "caption": "",
-                "rotation": 4,
-            },
-        ],
-
-        "stamps": [
-            {
-                "image": image_asset_data_uri(
-                    "assets/images/letter3/stamp1"
-                ),
-                "rotation": -6,
-            },
-        ],
     },
 }
 
@@ -267,7 +154,7 @@ body {
 }
 
 body {
-    overflow: visible;
+    overflow: hidden;
 }
 
 #letter-app {
@@ -833,53 +720,7 @@ Right = 767 letter + 18 gap + 185 music = 970px
 
 .full-inside {
     height: calc(100% - 46px);
-    min-height: 0;
     padding: 18px 31px;
-    overflow: hidden;
-}
-
-/* ========================================================
-   SCROLL ONLY THE FULL LETTER
-======================================================== */
-
-.paper-scroll {
-    width: 88%;
-    max-width: 650px;
-    height: 100%;
-    min-height: 0;
-    margin: 0 auto;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    padding-right: 10px;
-
-    /* Make the letter independently scrollable on touch devices. */
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: pan-y;
-
-    scrollbar-gutter: stable;
-    scrollbar-width: thin;
-    scrollbar-color: #df83aa rgba(95, 55, 78, .16);
-}
-
-.paper-scroll::-webkit-scrollbar {
-    width: 9px;
-}
-
-.paper-scroll::-webkit-scrollbar-track {
-    background: rgba(95, 55, 78, .10);
-    border-radius: 999px;
-}
-
-.paper-scroll::-webkit-scrollbar-thumb {
-    background: #df83aa;
-    border-radius: 999px;
-}
-
-.paper-scroll::-webkit-scrollbar-thumb:hover {
-    background: #ee9abb;
 }
 
 
@@ -890,15 +731,11 @@ Right = 767 letter + 18 gap + 185 music = 970px
 .paper {
     position: relative;
 
-    width: 100%;
-    max-width: none;
+    width: 82%;
+    max-width: 610px;
+    height: 470px;
 
-    min-height: 100%;
-    height: auto;
-
-    margin: 0;
-
-    overflow: visible;
+    margin: 0 auto;
 
     padding:
         48px
@@ -993,6 +830,12 @@ Right = 767 letter + 18 gap + 185 music = 970px
         transform .25s ease;
 }
 
+@media (min-width: 1051px) {
+    .paper {
+        height: 100%;
+        margin: 0 auto;
+    }
+}
 
 .paper.paper-changing {
     opacity: 0;
@@ -1010,180 +853,6 @@ Right = 767 letter + 18 gap + 185 music = 970px
     line-height: 1.65;
     letter-spacing: .1px;
 }
-
-
-/* ========================================================
-   OPTIONAL POLAROIDS INSIDE THE LETTER
-======================================================== */
-
-.letter-polaroids {
-    display: none;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-
-    gap: 24px 18px;
-
-    margin:
-        34px
-        0
-        30px;
-}
-
-.letter-polaroids.has-items {
-    display: flex;
-}
-
-.polaroid {
-    width: min(190px, 46%);
-
-    padding:
-        10px
-        10px
-        28px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #fffaf0,
-            #f5eadc
-        );
-
-    border:
-        1px solid
-        rgba(91, 63, 54, .12);
-
-    border-radius: 2px;
-
-    box-shadow:
-        0 10px 19px
-        rgba(58, 36, 31, .20);
-
-    transform:
-        rotate(
-            var(--polaroid-rotation, 0deg)
-        );
-
-    transform-origin: center;
-
-    transition:
-        transform .2s ease;
-}
-
-.polaroid:hover {
-    transform:
-        rotate(0deg)
-        scale(1.025);
-}
-
-.polaroid img {
-    display: block;
-
-    width: 100%;
-    aspect-ratio: 1 / 1;
-
-    object-fit: cover;
-
-    background: #e9ddce;
-
-    border:
-        1px solid
-        rgba(70, 48, 43, .12);
-
-    filter:
-        saturate(.92)
-        contrast(.96);
-}
-
-.polaroid-caption {
-    min-height: 16px;
-
-    margin-top: 10px;
-
-    padding:
-        0
-        3px;
-
-    color: #4b3538;
-
-    text-align: center;
-
-    font-family:
-        "Segoe Print",
-        "Bradley Hand",
-        "Comic Sans MS",
-        cursive;
-
-    font-size: 13px;
-
-    line-height: 1.35;
-}
-
-
-/* ========================================================
-   OPTIONAL STAMPS INSIDE THE LETTER
-======================================================== */
-
-.letter-stamps {
-    display: none;
-
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
-
-    gap: 9px;
-
-    margin:
-        4px
-        4px
-        28px;
-}
-
-.letter-stamps.has-items {
-    display: flex;
-}
-
-.stamp {
-    width: 74px;
-    aspect-ratio: 4 / 5;
-
-    padding: 6px;
-
-    background: #f8ead8;
-
-    border:
-        2px dashed
-        rgba(95, 61, 70, .36);
-
-    box-shadow:
-        0 6px 12px
-        rgba(64, 38, 39, .14);
-
-    transform:
-        rotate(
-            var(--stamp-rotation, 0deg)
-        );
-
-    transform-origin: center;
-}
-
-.stamp img {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    border:
-        1px solid
-        rgba(78, 54, 55, .14);
-
-    filter:
-        saturate(.9)
-        contrast(.96);
-}
-
 
 .signature {
     margin-top: 25px;
@@ -1467,8 +1136,8 @@ Right = 767 letter + 18 gap + 185 music = 970px
         height: 625px;
     }
 
-    .paper-scroll {
-        width: 90%;
+    .paper {
+        height: 525px;
     }
 }
 
@@ -1480,9 +1149,7 @@ Right = 767 letter + 18 gap + 185 music = 970px
 @media (max-width: 650px) {
 
     #letter-app {
-        min-height: 1900px;
-        height: auto;
-        overflow: visible;
+        min-height: 2100px;
     }
 
     .page {
@@ -1523,76 +1190,30 @@ Right = 767 letter + 18 gap + 185 music = 970px
     }
 
     .full-window {
-        height: 610px;
-        min-height: 610px;
+        height: auto;
     }
 
     .full-inside {
-        height: calc(100% - 46px);
-        min-height: 0;
-        padding: 12px 8px 14px;
-        overflow: hidden;
-    }
-
-    .paper-scroll {
-        width: 100%;
-        max-width: none;
-        height: 100%;
-        min-height: 0;
-        padding-right: 6px;
-
-        overflow-y: auto;
-        overflow-x: hidden;
-
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-        touch-action: pan-y;
+        padding: 15px 10px 20px;
     }
 
     .paper {
-        width: 100%;
-        min-height: 100%;
+        width: 96%;
         height: auto;
+        min-height: 470px;
 
         padding:
-            38px
-            26px
-            36px;
+            45px
+            35px
+            40px;
     }
 
     .letter-text {
         font-size: 15px;
-        line-height: 1.7;
-        overflow-wrap: anywhere;
-    }
-
-    .letter-polaroids {
-        gap: 20px 12px;
-        margin: 28px 0 25px;
-    }
-
-    .polaroid {
-        width: min(155px, 45%);
-        padding: 8px 8px 23px;
-    }
-
-    .polaroid-caption {
-        font-size: 11px;
-    }
-
-    .letter-stamps {
-        gap: 7px;
-        margin-bottom: 22px;
-    }
-
-    .stamp {
-        width: 58px;
-        padding: 5px;
     }
 
     .signature {
         font-size: 15px;
-        overflow-wrap: anywhere;
     }
 
     .paper-sparkle {
@@ -1623,38 +1244,6 @@ Right = 767 letter + 18 gap + 185 music = 970px
 
     .right-controls {
         justify-content: center;
-    }
-}
-
-@media (max-width: 390px) {
-
-    .title {
-        font-size: 32px;
-    }
-
-    .subtitle {
-        font-size: 13px;
-    }
-
-    .envelope-item {
-        transform: scale(.78);
-    }
-
-    .full-window {
-        height: 570px;
-        min-height: 570px;
-    }
-
-    .paper {
-        padding:
-            34px
-            21px
-            32px;
-    }
-
-    .letter-text,
-    .signature {
-        font-size: 14px;
     }
 }
 
@@ -1826,47 +1415,28 @@ Right = 767 letter + 18 gap + 185 music = 970px
 
                 <div class="full-inside">
 
-                    <div
-                        class="paper-scroll"
-                        id="paperScroll"
+                    <article
+                        class="paper"
+                        id="paper"
                     >
 
-                        <article
-                            class="paper"
-                            id="paper"
-                        >
+                        <div
+                            class="letter-text"
+                            id="letterText"
+                        ></div>
 
-                            <div
-                                class="letter-text"
-                                id="letterText"
-                            ></div>
+                        <div
+                            class="signature"
+                            id="signature"
+                        ></div>
 
-                            <div
-                                class="letter-polaroids"
-                                id="letterPolaroids"
-                                aria-label="Letter photos"
-                            ></div>
+                        <div class="paper-sparkle">
+                            ✧
+                            <br>
+                            ✦
+                        </div>
 
-                            <div
-                                class="letter-stamps"
-                                id="letterStamps"
-                                aria-label="Letter stamps"
-                            ></div>
-
-                            <div
-                                class="signature"
-                                id="signature"
-                            ></div>
-
-                            <div class="paper-sparkle">
-                                ✧
-                                <br>
-                                ✦
-                            </div>
-
-                        </article>
-
-                    </div>
+                    </article>
 
                 </div>
 
@@ -2028,17 +1598,8 @@ const envelopes =
 const paper =
     document.getElementById("paper");
 
-const paperScroll =
-    document.getElementById("paperScroll");
-
 const letterText =
     document.getElementById("letterText");
-
-const letterPolaroids =
-    document.getElementById("letterPolaroids");
-
-const letterStamps =
-    document.getElementById("letterStamps");
 
 const signature =
     document.getElementById("signature");
@@ -2097,162 +1658,6 @@ function formatTime(seconds) {
 
 
 /* ========================================================
-   OPTIONAL POLAROID / STAMP RENDERERS
-======================================================== */
-
-function renderPolaroids(items) {
-
-    letterPolaroids.replaceChildren();
-
-    const validItems =
-        Array.isArray(items)
-        ? items.filter(
-            item =>
-                item &&
-                item.image
-        )
-        : [];
-
-    letterPolaroids.classList.toggle(
-        "has-items",
-        validItems.length > 0
-    );
-
-    validItems.forEach(
-        (item, index) => {
-
-            const card =
-                document.createElement(
-                    "figure"
-                );
-
-            card.className =
-                "polaroid";
-
-            const rotation =
-                Number(
-                    item.rotation
-                ) || 0;
-
-            card.style.setProperty(
-                "--polaroid-rotation",
-                `${rotation}deg`
-            );
-
-
-            const image =
-                document.createElement(
-                    "img"
-                );
-
-            image.src =
-                item.image;
-
-            image.alt =
-                item.alt ||
-                `Letter photo ${index + 1}`;
-
-            image.loading =
-                "lazy";
-
-
-            const caption =
-                document.createElement(
-                    "figcaption"
-                );
-
-            caption.className =
-                "polaroid-caption";
-
-            caption.textContent =
-                item.caption || "";
-
-
-            card.appendChild(
-                image
-            );
-
-            card.appendChild(
-                caption
-            );
-
-            letterPolaroids.appendChild(
-                card
-            );
-        }
-    );
-}
-
-
-function renderStamps(items) {
-
-    letterStamps.replaceChildren();
-
-    const validItems =
-        Array.isArray(items)
-        ? items.filter(
-            item =>
-                item &&
-                item.image
-        )
-        : [];
-
-    letterStamps.classList.toggle(
-        "has-items",
-        validItems.length > 0
-    );
-
-    validItems.forEach(
-        (item, index) => {
-
-            const frame =
-                document.createElement(
-                    "div"
-                );
-
-            frame.className =
-                "stamp";
-
-            const rotation =
-                Number(
-                    item.rotation
-                ) || 0;
-
-            frame.style.setProperty(
-                "--stamp-rotation",
-                `${rotation}deg`
-            );
-
-
-            const image =
-                document.createElement(
-                    "img"
-                );
-
-            image.src =
-                item.image;
-
-            image.alt =
-                item.alt ||
-                `Letter stamp ${index + 1}`;
-
-            image.loading =
-                "lazy";
-
-
-            frame.appendChild(
-                image
-            );
-
-            letterStamps.appendChild(
-                frame
-            );
-        }
-    );
-}
-
-
-/* ========================================================
    LETTER DISPLAY
 ======================================================== */
 
@@ -2264,19 +1669,8 @@ function updateLetterDisplay(letter) {
 
     setTimeout(() => {
 
-        /* Every newly opened letter begins at the top. */
-        paperScroll.scrollTop = 0;
-
         letterText.textContent =
             letter.text;
-
-        renderPolaroids(
-            letter.polaroids
-        );
-
-        renderStamps(
-            letter.stamps
-        );
 
         signature.textContent =
             letter.signature;
@@ -2290,8 +1684,6 @@ function updateLetterDisplay(letter) {
         paper.classList.remove(
             "paper-changing"
         );
-
-        resizeStreamlitFrame();
 
     }, 220);
 }
@@ -2711,78 +2103,6 @@ nextButton.addEventListener(
 
 
 /* ========================================================
-   STREAMLIT FRAME HEIGHT
-   Keep one normal page scrollbar on desktop and phone.
-======================================================== */
-
-let frameResizeTimer = null;
-
-function resizeStreamlitFrame() {
-
-    clearTimeout(frameResizeTimer);
-
-    frameResizeTimer = setTimeout(() => {
-
-        const app =
-            document.getElementById("letter-app");
-
-        if (!app) {
-            return;
-        }
-
-        const contentHeight =
-            Math.ceil(
-                Math.max(
-                    app.scrollHeight,
-                    app.offsetHeight,
-                    document.body.scrollHeight,
-                    document.documentElement.scrollHeight
-                )
-            );
-
-        window.parent.postMessage(
-            {
-                isStreamlitMessage: true,
-                type: "streamlit:setFrameHeight",
-                height: contentHeight
-            },
-            "*"
-        );
-
-    }, 40);
-}
-
-
-window.addEventListener(
-    "load",
-    () => {
-        resizeStreamlitFrame();
-
-        setTimeout(resizeStreamlitFrame, 150);
-        setTimeout(resizeStreamlitFrame, 500);
-        setTimeout(resizeStreamlitFrame, 1200);
-    }
-);
-
-window.addEventListener(
-    "resize",
-    resizeStreamlitFrame
-);
-
-if ("ResizeObserver" in window) {
-
-    const appResizeObserver =
-        new ResizeObserver(
-            resizeStreamlitFrame
-        );
-
-    appResizeObserver.observe(
-        document.getElementById("letter-app")
-    );
-}
-
-
-/* ========================================================
    INITIAL PAGE
    Show letter 1, but DON'T autoplay before any click.
 ======================================================== */
@@ -2791,8 +2111,6 @@ loadLetter(
     "1",
     false
 );
-
-resizeStreamlitFrame();
 
 </script>
 """
@@ -2814,10 +2132,6 @@ html = html.replace(
 
 components.html(
     html,
-    # Large fallback height for phones. Because scrolling=False,
-    # this does NOT create an iframe scrollbar; the normal Streamlit/browser
-    # page scroll is used. The JS above will reduce/adjust the frame height
-    # automatically where Streamlit permits it.
-    height=2200,
+    height=1100,
     scrolling=False,
 )
