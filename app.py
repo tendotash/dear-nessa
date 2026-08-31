@@ -45,6 +45,7 @@ def file_to_data_uri(path_str):
 letter_data = {
     "1": {
         "text": """When you lose sight of purpose, remember Melbourne.
+
 Think of how alive you felt. How intriguing it was when we exited the airport
 and it was as though the sky was an aircon. How cute it was when the villagers
 waved at us on the Puffing Billy. How cool it was seeing cows, sheeps and
@@ -53,12 +54,13 @@ the 12 apostles at Great Ocean Road.
 There is so much more we have yet to experience.
 And I look forward to more firsts with you ♡
 
-Let's keep pushing through! """,
+When the world comes to an end, I hope I get to say,
+"I had the time of my life fighting dragons with you!" """,
         "signature": "Love, R ♡",
         "song_title": "long live",
         "artist": "Taylor Swift ♡",
         "audio": file_to_data_uri("assets/music/letter1.mp3"),
-        "start_time": 173,
+        "start_time": 174,
     },
 
     "2": {
