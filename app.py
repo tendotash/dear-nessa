@@ -55,7 +55,7 @@ going. Good things take time.""",
         "song_title": "our song",
         "artist": "Taylor Swift ♡",
         "audio": file_to_data_uri("assets/music/letter1.mp3"),
-        "start_time": 74,
+        "start_time": 75,
     },
 
     "2": {
