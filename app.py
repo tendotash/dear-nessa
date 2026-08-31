@@ -124,7 +124,7 @@ When the world comes to an end, I hope I get to say, "I had the time of my life 
                 ),
                 "caption": "another little memory",
                 "x": 10,
-                "y": 8,
+                "y": -8,
                 "width": 190,
                 "height": 170,
                 "rotation": 3,
