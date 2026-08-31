@@ -44,18 +44,23 @@ def file_to_data_uri(path_str):
 
 letter_data = {
     "1": {
-        "text": """Dear N,
+        "text": """When you lose sight of purpose, remember Melbourne.
 
-You did great today & it is
-all going to be okay!
+Think of how alive you felt. How intriguing it was when we exited the airport
+and it was as though the sky was an aircon. How cute it was when the villagers
+waved at us on the Puffing Billy. How cool it was seeing cows, sheeps and
+the 12 apostles at Great Ocean Road.
 
-Believe in yourself & keep
-going. Good things take time.""",
+And Mr Summit's Flat White and Toasties? Wew, there will be so many more Mr Summits to discover!
+
+There is so much more we have yet to experience. And I look forward to more firsts with you.
+
+When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!"""",
         "signature": "Love, R ♡",
-        "song_title": "our song",
+        "song_title": "long live",
         "artist": "Taylor Swift ♡",
         "audio": file_to_data_uri("assets/music/letter1.mp3"),
-        "start_time": 42,
+        "start_time": 173,
     },
 
     "2": {
