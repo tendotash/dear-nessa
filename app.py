@@ -160,6 +160,7 @@ When the world comes to an end, I hope I get to say, "I had the time of my life 
         "text": """Reminder:
 
 You are kind, you are funny, you are generous.
+
 You are gentle, you are honest, you are intelligent.
 
 You are caring, and you are cared for.
