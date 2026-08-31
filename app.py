@@ -179,7 +179,7 @@ You are beautiful, and you are more than enough.""",
                 "image": image_asset_data_uri(
                     "assets/images/letter2/photo1"
                 ),
-                "caption": "",
+                "caption": "That's you,",
                 "x": -10,
                 "y": 0,
                 "width": 190,
@@ -190,7 +190,7 @@ You are beautiful, and you are more than enough.""",
                 "image": image_asset_data_uri(
                     "assets/images/letter2/photo2"
                 ),
-                "caption": "",
+                "caption": "God's creation!",
                 "x": 10,
                 "y": -10,
                 "width": 190,
