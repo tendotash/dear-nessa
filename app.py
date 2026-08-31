@@ -59,7 +59,7 @@ When the world comes to an end, I hope I get to say, "I had the time of my life 
         "song_title": "long live",
         "artist": "Taylor Swift ♡",
         "audio": file_to_data_uri("assets/music/letter1.mp3"),
-        "start_time": 174,
+        "start_time": 173,
     },
 
     "2": {
