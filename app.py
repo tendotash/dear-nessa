@@ -1068,11 +1068,16 @@ Right = 767 letter + 18 gap + 185 music = 970px
 
 .letter-polaroids {
     display: none;
+
+    flex-direction: row;
     flex-wrap: wrap;
+
     justify-content: center;
     align-items: flex-start;
 
-    gap: 24px 18px;
+    gap: 18px;
+
+    width: 100%;
 
     margin:
         34px
@@ -1085,7 +1090,12 @@ Right = 767 letter + 18 gap + 185 music = 970px
 }
 
 .polaroid {
-    flex: 0 0 auto;
+    margin: 0;
+
+    flex:
+        0
+        0
+        var(--polaroid-width, 190px);
 
     /*
     width is controlled per photo in letter_data.
