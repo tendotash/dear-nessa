@@ -31,8 +31,42 @@ def file_to_data_uri(path_str):
     return f"data:audio/mpeg;base64,{encoded}"
 
 
+def image_asset_data_uri(path_without_extension):
+    """
+    Lets you upload .jpg, .jpeg, .png, or .webp images without
+    changing the Python code's base filename.
+    Example:
+        assets/images/letter1/photo1.jpg
+        assets/images/letter1/photo1.png
+    Both can be referenced as:
+        image_asset_data_uri("assets/images/letter1/photo1")
+    """
+
+    supported = [
+        (".jpg", "image/jpeg"),
+        (".jpeg", "image/jpeg"),
+        (".png", "image/png"),
+        (".webp", "image/webp"),
+    ]
+
+    for extension, mime_type in supported:
+        path = Path(path_without_extension + extension)
+
+        if path.exists():
+            encoded = base64.b64encode(
+                path.read_bytes()
+            ).decode("utf-8")
+
+            return (
+                f"data:{mime_type};base64,"
+                f"{encoded}"
+            )
+
+    return ""
+
+
 # =========================================================
-# LETTERS + MUSIC
+# LETTERS + MUSIC + OPTIONAL POLAROIDS / STAMPS
 #
 # start_time is in SECONDS.
 #
@@ -55,12 +89,48 @@ And Mr Summit's Flat White and Toasties? Wew, there will be so many more Mr Summ
 
 There is so much more we have yet to experience. And I look forward to more firsts with you.
 
-When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!♡"''',
+When the world comes to an end, I hope I get to say, "I had the time of my life fighting dragons with you!<3"''',
         "signature": "Love, R ♡",
         "song_title": "long live",
         "artist": "Taylor Swift ♡",
         "audio": file_to_data_uri("assets/music/letter1.mp3"),
         "start_time": 173,
+
+        # OPTIONAL POLAROIDS
+        # Upload these as .jpg, .jpeg, .png, or .webp.
+        # If a file does not exist, it simply will not appear.
+        "polaroids": [
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter1/photo1"
+                ),
+                "caption": "Melbourne ♡",
+                "rotation": -4,
+            },
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter1/photo2"
+                ),
+                "caption": "another little memory",
+                "rotation": 3,
+            },
+        ],
+
+        # OPTIONAL STAMPS
+        "stamps": [
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter1/stamp1"
+                ),
+                "rotation": 7,
+            },
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter1/stamp2"
+                ),
+                "rotation": -5,
+            },
+        ],
     },
 
     "2": {
@@ -80,6 +150,25 @@ more appreciated than you know.""",
         "artist": "Your Artist Name ♡",
         "audio": file_to_data_uri("assets/music/letter2.mp3"),
         "start_time": 77,
+
+        "polaroids": [
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter2/photo1"
+                ),
+                "caption": "",
+                "rotation": -3,
+            },
+        ],
+
+        "stamps": [
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter2/stamp1"
+                ),
+                "rotation": 5,
+            },
+        ],
     },
 
     "3": {
@@ -98,6 +187,25 @@ to yourself too.""",
         "artist": "Your Artist Name ♡",
         "audio": file_to_data_uri("assets/music/letter3.mp3"),
         "start_time": 125,
+
+        "polaroids": [
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter3/photo1"
+                ),
+                "caption": "",
+                "rotation": 4,
+            },
+        ],
+
+        "stamps": [
+            {
+                "image": image_asset_data_uri(
+                    "assets/images/letter3/stamp1"
+                ),
+                "rotation": -6,
+            },
+        ],
     },
 }
 
@@ -903,6 +1011,180 @@ Right = 767 letter + 18 gap + 185 music = 970px
     letter-spacing: .1px;
 }
 
+
+/* ========================================================
+   OPTIONAL POLAROIDS INSIDE THE LETTER
+======================================================== */
+
+.letter-polaroids {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+
+    gap: 24px 18px;
+
+    margin:
+        34px
+        0
+        30px;
+}
+
+.letter-polaroids.has-items {
+    display: flex;
+}
+
+.polaroid {
+    width: min(190px, 46%);
+
+    padding:
+        10px
+        10px
+        28px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffaf0,
+            #f5eadc
+        );
+
+    border:
+        1px solid
+        rgba(91, 63, 54, .12);
+
+    border-radius: 2px;
+
+    box-shadow:
+        0 10px 19px
+        rgba(58, 36, 31, .20);
+
+    transform:
+        rotate(
+            var(--polaroid-rotation, 0deg)
+        );
+
+    transform-origin: center;
+
+    transition:
+        transform .2s ease;
+}
+
+.polaroid:hover {
+    transform:
+        rotate(0deg)
+        scale(1.025);
+}
+
+.polaroid img {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    object-fit: cover;
+
+    background: #e9ddce;
+
+    border:
+        1px solid
+        rgba(70, 48, 43, .12);
+
+    filter:
+        saturate(.92)
+        contrast(.96);
+}
+
+.polaroid-caption {
+    min-height: 16px;
+
+    margin-top: 10px;
+
+    padding:
+        0
+        3px;
+
+    color: #4b3538;
+
+    text-align: center;
+
+    font-family:
+        "Segoe Print",
+        "Bradley Hand",
+        "Comic Sans MS",
+        cursive;
+
+    font-size: 13px;
+
+    line-height: 1.35;
+}
+
+
+/* ========================================================
+   OPTIONAL STAMPS INSIDE THE LETTER
+======================================================== */
+
+.letter-stamps {
+    display: none;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 9px;
+
+    margin:
+        4px
+        4px
+        28px;
+}
+
+.letter-stamps.has-items {
+    display: flex;
+}
+
+.stamp {
+    width: 74px;
+    aspect-ratio: 4 / 5;
+
+    padding: 6px;
+
+    background: #f8ead8;
+
+    border:
+        2px dashed
+        rgba(95, 61, 70, .36);
+
+    box-shadow:
+        0 6px 12px
+        rgba(64, 38, 39, .14);
+
+    transform:
+        rotate(
+            var(--stamp-rotation, 0deg)
+        );
+
+    transform-origin: center;
+}
+
+.stamp img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border:
+        1px solid
+        rgba(78, 54, 55, .14);
+
+    filter:
+        saturate(.9)
+        contrast(.96);
+}
+
+
 .signature {
     margin-top: 25px;
 
@@ -1284,6 +1566,30 @@ Right = 767 letter + 18 gap + 185 music = 970px
         overflow-wrap: anywhere;
     }
 
+    .letter-polaroids {
+        gap: 20px 12px;
+        margin: 28px 0 25px;
+    }
+
+    .polaroid {
+        width: min(155px, 45%);
+        padding: 8px 8px 23px;
+    }
+
+    .polaroid-caption {
+        font-size: 11px;
+    }
+
+    .letter-stamps {
+        gap: 7px;
+        margin-bottom: 22px;
+    }
+
+    .stamp {
+        width: 58px;
+        padding: 5px;
+    }
+
     .signature {
         font-size: 15px;
         overflow-wrap: anywhere;
@@ -1536,6 +1842,18 @@ Right = 767 letter + 18 gap + 185 music = 970px
                             ></div>
 
                             <div
+                                class="letter-polaroids"
+                                id="letterPolaroids"
+                                aria-label="Letter photos"
+                            ></div>
+
+                            <div
+                                class="letter-stamps"
+                                id="letterStamps"
+                                aria-label="Letter stamps"
+                            ></div>
+
+                            <div
                                 class="signature"
                                 id="signature"
                             ></div>
@@ -1716,6 +2034,12 @@ const paperScroll =
 const letterText =
     document.getElementById("letterText");
 
+const letterPolaroids =
+    document.getElementById("letterPolaroids");
+
+const letterStamps =
+    document.getElementById("letterStamps");
+
 const signature =
     document.getElementById("signature");
 
@@ -1773,6 +2097,162 @@ function formatTime(seconds) {
 
 
 /* ========================================================
+   OPTIONAL POLAROID / STAMP RENDERERS
+======================================================== */
+
+function renderPolaroids(items) {
+
+    letterPolaroids.replaceChildren();
+
+    const validItems =
+        Array.isArray(items)
+        ? items.filter(
+            item =>
+                item &&
+                item.image
+        )
+        : [];
+
+    letterPolaroids.classList.toggle(
+        "has-items",
+        validItems.length > 0
+    );
+
+    validItems.forEach(
+        (item, index) => {
+
+            const card =
+                document.createElement(
+                    "figure"
+                );
+
+            card.className =
+                "polaroid";
+
+            const rotation =
+                Number(
+                    item.rotation
+                ) || 0;
+
+            card.style.setProperty(
+                "--polaroid-rotation",
+                `${rotation}deg`
+            );
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+            image.src =
+                item.image;
+
+            image.alt =
+                item.alt ||
+                `Letter photo ${index + 1}`;
+
+            image.loading =
+                "lazy";
+
+
+            const caption =
+                document.createElement(
+                    "figcaption"
+                );
+
+            caption.className =
+                "polaroid-caption";
+
+            caption.textContent =
+                item.caption || "";
+
+
+            card.appendChild(
+                image
+            );
+
+            card.appendChild(
+                caption
+            );
+
+            letterPolaroids.appendChild(
+                card
+            );
+        }
+    );
+}
+
+
+function renderStamps(items) {
+
+    letterStamps.replaceChildren();
+
+    const validItems =
+        Array.isArray(items)
+        ? items.filter(
+            item =>
+                item &&
+                item.image
+        )
+        : [];
+
+    letterStamps.classList.toggle(
+        "has-items",
+        validItems.length > 0
+    );
+
+    validItems.forEach(
+        (item, index) => {
+
+            const frame =
+                document.createElement(
+                    "div"
+                );
+
+            frame.className =
+                "stamp";
+
+            const rotation =
+                Number(
+                    item.rotation
+                ) || 0;
+
+            frame.style.setProperty(
+                "--stamp-rotation",
+                `${rotation}deg`
+            );
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+            image.src =
+                item.image;
+
+            image.alt =
+                item.alt ||
+                `Letter stamp ${index + 1}`;
+
+            image.loading =
+                "lazy";
+
+
+            frame.appendChild(
+                image
+            );
+
+            letterStamps.appendChild(
+                frame
+            );
+        }
+    );
+}
+
+
+/* ========================================================
    LETTER DISPLAY
 ======================================================== */
 
@@ -1789,6 +2269,14 @@ function updateLetterDisplay(letter) {
 
         letterText.textContent =
             letter.text;
+
+        renderPolaroids(
+            letter.polaroids
+        );
+
+        renderStamps(
+            letter.stamps
+        );
 
         signature.textContent =
             letter.signature;
