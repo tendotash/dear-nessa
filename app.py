@@ -168,7 +168,6 @@ You are capable of change.
 You are caring, and you are cared for.
 You are loving, and you are loved.
 
-
 You are God's creation and he creates nothing less than perfect.
 
 You are beautiful, and you are more than enough.""",
