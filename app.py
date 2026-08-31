@@ -112,8 +112,8 @@ When the world comes to an end, I hope I get to say, "I had the time of my life 
                 "y": 0,
 
                 # Polaroid width + PHOTO height, in pixels
-                "width": 190,
-                "height": 170,
+                "width": 220,
+                "height": 200,
 
                 # Negative = tilt left, positive = tilt right
                 "rotation": -4,
